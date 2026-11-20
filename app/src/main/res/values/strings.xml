@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">KAIxGen Assistant</string>
+    <string name="brand_header_title">KAIxGen</string>
+    <string name="brand_edition_tag">GOKUxEDITION</string>
+    <string name="brand_powered_by">Powered by KAIxGenShopLabs</string>
+    <string name="brand_signature">GOKUxEDITION \u2022 Powered by KAIxGenShopLabs</string>
+    <string name="developer_credit">Developed by Dipak Choudhary</string>
+    <string name="permanent_package_id">com.kaixgen.assistant</string>
+
+    <!-- Bottom Navigation (5 Full Sections) -->
+    <string name="nav_voice_lock">Lock</string>
+    <string name="nav_kai_buddy">KAI</string>
+    <string name="nav_routines">Routines</string>
+    <string name="nav_find_phone">Safety</string>
+    <string name="nav_more">More</string>
+
+    <!-- Status Chips -->
+    <string name="status_listening">Listening • Hey KAI</string>
+    <string name="status_paused">Paused • Tap orb</string>
+    <string name="status_mic_needed">Mic permission needed</string>
+
+    <!-- Voice Lock Home Screen -->
+    <string name="voice_lock_title">Voice Lock</string>
+    <string name="voice_lock_subtitle">Your voice keeps your phone secure</string>
+    <string name="voice_lock_extra_layer_note">Extra on-device privacy layer • Never replaces your system lock</string>
+    <string name="voice_phrase_title">Voice Phrase</string>
+    <string name="backup_passcode_title">Backup Passcode</string>
+    <string name="app_lock_title">App Lock with Voice Phrase</string>
+    <string name="app_lock_subtitle">Lock selected apps with lock phrase</string>
+    <string name="action_change">Change</string>
+    <string name="action_test_lock">Test Lock</string>
+    <string name="pin_required_banner">Create a Backup Passcode before enabling Voice Lock so you are never locked out.</string>
+
+    <!-- Set Voice Phrase Screen -->
+    <string name="set_phrase_heading_prefix">Set Your </string>
+    <string name="set_phrase_heading_highlight">Voice</string>
+    <string name="set_phrase_heading_suffix"> Phrase</string>
+    <string name="set_phrase_subtitle">Choose a phrase you\u2019ll remember and say it naturally.</string>
+    <string name="set_phrase_tagline">Your Voice. Your Access.</string>
+    <string name="card_set_phrase_title">Set Your Voice Phrase</string>
+    <string name="card_set_phrase_subtitle">Tap and say your voice phrase</string>
+    <string name="card_create_pin_title">Create Backup Passcode</string>
+    <string name="card_create_pin_subtitle">Use it if you forget your voice phrase</string>
+    <string name="what_i_heard_label">What I heard</string>
+
+    <!-- KAI Buddy Tab -->
+    <string name="buddy_heading_prefix">Just </string>
+    <string name="buddy_heading_highlight">say it</string>
+    <string name="buddy_subtitle">Get things done on your phone, hands-free</string>
+    <string name="orb_tap_to_speak">Tap to speak</string>
+    <string name="orb_listening">Listening\u2026</string>
+    <string name="orb_thinking">Thinking\u2026</string>
+    <string name="orb_speaking">Speaking\u2026</string>
+    <string name="try_saying_label">Try saying\u2026</string>
+
+    <!-- Set Backup Passcode Screen -->
+    <string name="set_pin_heading_prefix">Set Backup </string>
+    <string name="set_pin_heading_highlight">Passcode</string>
+    <string name="confirm_pin_heading_prefix">Confirm </string>
+    <string name="confirm_pin_heading_highlight">Passcode</string>
+    <string name="set_pin_subtitle_4">Create a 4-digit PIN to use if you forget your voice phrase.</string>
+    <string name="set_pin_subtitle_6">Create a 6-digit PIN for stronger protection in Strict mode.</string>
+    <string name="confirm_pin_subtitle">Re-enter your PIN to confirm and lock it safely on-device.</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_finish_setup">Finish Setup</string>
+    <string name="pin_mismatch_error">Passcodes didn\u2019t match. Please try again.</string>
+    <string name="pin_on_device_note">Encrypted locally with Android Keystore \u2022 Never uploaded</string>
+
+    <!-- Find Phone Screen -->
+    <string name="find_phone_heading_prefix">Find </string>
+    <string name="find_phone_heading_highlight">Phone</string>
+    <string name="find_phone_subtitle">Ring your device at full volume by voice or clap, even on silent.</string>
+    <string name="find_phone_ring_button">Ring My Phone</string>
+    <string name="find_phone_stop_button">Stop Ringing</string>
+
+    <!-- Settings & Accessibility -->
+    <string name="cd_settings">Open Settings</string>
+    <string name="cd_back">Navigate back</string>
+    <string name="cd_toggle_pin_visibility">Toggle passcode visibility</string>
+    <string name="cd_voice_orb">Tap to activate KAI voice assistant</string>
+    <string name="cd_voice_unlock_hero">Illustration of unlocking phone using voice phrase and backup PIN</string>
+    <string name="cd_brand_logo">KAIxGen Assistant logo</string>
+    <string name="service_channel_name">KAI Voice Listening</string>
+    <string name="service_notification_title">KAI is listening for \u201CHey KAI\u201D</string>
+    <string name="service_notification_body">On-device wake word active. Audio is never stored.</string>
+</resources>
