@@ -89,7 +89,9 @@ fun MoreHubScreen(
     onNavigateToProfileAccount: () -> Unit = {},
     onNavigateToSubscriptionPro: () -> Unit = {},
     onNavigateToHyperSecurity: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToStudentMode: () -> Unit = {},
+    onNavigateToSeniorMode: () -> Unit = {},
 ) {
     val ext = KaiTheme.extendedColors
     var searchQuery by remember { mutableStateOf("") }
@@ -105,6 +107,8 @@ fun MoreHubScreen(
     fun openFeature(item: KaiFeatureItem) {
         when (item.route) {
             KaiRoutesV2.AI_CHAT -> onNavigateToAiChat()
+            KaiRoutesV2.STUDENT_MODE -> onNavigateToStudentMode()
+            KaiRoutesV2.SENIOR_MODE -> onNavigateToSeniorMode()
             KaiRoutesV2.AI_TOOLS_HUB -> onNavigateToAiToolsHub()
             KaiRoutesV2.INTERPRETER_MEMORY -> onNavigateToInterpreterMemory()
             KaiRoutesV2.HYPER_SECURITY_CENTER -> onNavigateToHyperSecurity()
