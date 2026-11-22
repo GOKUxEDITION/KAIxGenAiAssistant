@@ -1,6 +1,7 @@
 package com.kaixgen.assistant
 
 import android.os.Bundle
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -25,7 +26,9 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
+                        navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+                        )
         setContent {
             val container = remember { appContainer }
             val settingsViewModel: SettingsViewModel = viewModel(factory = container.viewModelFactory)
@@ -34,7 +37,7 @@ class MainActivity : FragmentActivity() {
             val useDarkTheme = when (settingsState.themePreference) {
                 ThemePreference.LIGHT -> false
                 ThemePreference.DARK -> true
-                ThemePreference.SYSTEM -> isSystemInDarkTheme()
+                ThemePreference.SYSTEM -> true
             }
 
             KAIxGenTheme(
