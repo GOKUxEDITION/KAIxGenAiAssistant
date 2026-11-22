@@ -1,5 +1,6 @@
 package com.kaixgen.assistant.domain.routine
 
+import com.kaixgen.assistant.domain.voice.ActionExecutionResult
 import com.kaixgen.assistant.domain.voice.HinglishVoiceCommandParser
 import com.kaixgen.assistant.domain.voice.KaiActionExecutor
 import com.kaixgen.assistant.domain.voice.KaiTtsManager
@@ -34,12 +35,24 @@ class DynamicRoutineEngine(
             val trimmed = rawStep.trim()
             if (trimmed.isBlank()) continue
             val parsed = parser.parse(trimmed)
-            val exec = actionExecutor.execute(parsed, confirmed = true)
-            results += RoutineStepResult(
-                stepCommand = trimmed,
-                success = exec.isSuccess,
-                message = exec.spokenFeedback
-            )
+            val stepResult = when (val exec = actionExecutor.execute(parsed, confirmed = true)) {
+                is ActionExecutionResult.Executed -> RoutineStepResult(
+                    stepCommand = trimmed,
+                    success = true,
+                    message = exec.displayMessage
+                )
+                is ActionExecutionResult.NeedsConfirmation -> RoutineStepResult(
+                    stepCommand = trimmed,
+                    success = false,
+                    message = exec.promptMessage
+                )
+                is ActionExecutionResult.Failure -> RoutineStepResult(
+                    stepCommand = trimmed,
+                    success = false,
+                    message = exec.errorMessage
+                )
+            }
+            results += stepResult
             delay(interStepDelayMs)
         }
 
