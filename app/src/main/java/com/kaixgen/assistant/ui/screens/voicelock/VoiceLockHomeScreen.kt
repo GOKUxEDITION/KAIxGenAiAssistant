@@ -411,7 +411,9 @@ fun VoiceLockHomeScreen(
                                     Text(
                                         text = mode.label,
                                         style = MaterialTheme.typography.labelMedium,
-                                        maxLines = 1
+                                        maxLines = 1,
+                                        softWrap = false,
+                                        modifier = Modifier.padding(horizontal = 6.dp)
                                     )
                                 },
                                 modifier = Modifier
