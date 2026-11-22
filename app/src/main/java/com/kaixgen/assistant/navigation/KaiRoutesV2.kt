@@ -1,0 +1,11 @@
+package com.kaixgen.assistant.navigation
+
+object KaiRoutesV2 {
+    const val SECURITY_HEALTH_INTRUDER = "security_health_intruder"
+    const val VOICEPRINT_MANAGER = "voiceprint_manager"
+    const val SAFETY_HUB = "safety_hub"
+    const val DRIVING_MODE = "driving_mode"
+    const val INTERPRETER_MEMORY = "interpreter_memory"
+    const val PRODUCTIVITY_HUB = "productivity_hub"
+    const val PRIVACY_OEM_WIZARD = "privacy_oem_wizard"
+}

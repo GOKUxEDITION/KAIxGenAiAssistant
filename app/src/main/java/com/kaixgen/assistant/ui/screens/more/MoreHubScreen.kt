@@ -36,6 +36,11 @@ import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Timer
+import androidx.compose.material.icons.rounded.GraphicEq
+import androidx.compose.material.icons.rounded.PrivacyTip
+import androidx.compose.material.icons.rounded.Security
+import androidx.compose.material.icons.rounded.Shield
+import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -98,6 +103,13 @@ fun MoreHubScreen(
     onNavigateToCommandHelp: () -> Unit,
     onNavigateToDiagnostics: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToSecurityHealth: () -> Unit = {},
+    onNavigateToVoiceprint: () -> Unit = {},
+    onNavigateToSafetyHub: () -> Unit = {},
+    onNavigateToFullDriving: () -> Unit = {},
+    onNavigateToInterpreterMemory: () -> Unit = {},
+    onNavigateToProductivityHub: () -> Unit = {},
+    onNavigateToPrivacyOem: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val extendedColors = KaiTheme.extendedColors
@@ -269,6 +281,62 @@ fun MoreHubScreen(
                 }
             }
 
+
+        // Section 2B: KAI v2.1 Pro Suite
+        Text(
+            text = "KAI v2.1 Pro Suite",
+            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.primary
+        )
+        MoreNavRowCard(
+            icon = Icons.Rounded.Security,
+            title = "Security Health & Intruder Vault",
+            subtitle = "Security score, intruder selfies & lock hardening",
+            onClick = onNavigateToSecurityHealth,
+            testTag = "more_security_health_row"
+        )
+        MoreNavRowCard(
+            icon = Icons.Rounded.GraphicEq,
+            title = "Speaker Voiceprint Biometrics",
+            subtitle = "Enroll & verify your personal voiceprint",
+            onClick = onNavigateToVoiceprint,
+            testTag = "more_voiceprint_row"
+        )
+        MoreNavRowCard(
+            icon = Icons.Rounded.Shield,
+            title = "Personal Safety, SOS & Fake Call",
+            subtitle = "Emergency SOS, loud siren & fake incoming call",
+            onClick = onNavigateToSafetyHub,
+            testTag = "more_safety_hub_row"
+        )
+        MoreNavRowCard(
+            icon = Icons.Rounded.DirectionsCar,
+            title = "Full-Screen Driving Mode & Parking",
+            subtitle = "Hands-free dashboard & save/find parked car",
+            onClick = onNavigateToFullDriving,
+            testTag = "more_full_driving_row"
+        )
+        MoreNavRowCard(
+            icon = Icons.Rounded.Translate,
+            title = "Hindi/English Interpreter & Memory Vault",
+            subtitle = "Live bilingual translation & saved personal facts",
+            onClick = onNavigateToInterpreterMemory,
+            testTag = "more_interpreter_memory_row"
+        )
+        MoreNavRowCard(
+            icon = Icons.Rounded.Timer,
+            title = "Productivity: Expenses & Focus",
+            subtitle = "Track daily expenses, Pomodoro focus & notes",
+            onClick = onNavigateToProductivityHub,
+            testTag = "more_productivity_hub_row"
+        )
+        MoreNavRowCard(
+            icon = Icons.Rounded.PrivacyTip,
+            title = "Privacy Center & OEM Battery Wizard",
+            subtitle = "Permissions audit & background autostart setup",
+            onClick = onNavigateToPrivacyOem,
+            testTag = "more_privacy_oem_row"
+        )
             // Section 3: Productivity & Quick Tasks (PRD S7-05)
             KaiElevatedCard(modifier = Modifier.testTag("more_tasks_card")) {
                 Column(
