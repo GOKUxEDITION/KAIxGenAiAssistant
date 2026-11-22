@@ -72,7 +72,7 @@ class KaiAppVaultMonitorService : Service() {
     private fun startWatchingForegroundApps() {
         if (monitorJob?.isActive == true) return
         val app = application as? KaiApplication ?: return
-        val repo = app.appContainer.repository
+        val repo = app.appContainer.localRepository
 
         monitorJob = scope.launch {
             while (isActive) {
