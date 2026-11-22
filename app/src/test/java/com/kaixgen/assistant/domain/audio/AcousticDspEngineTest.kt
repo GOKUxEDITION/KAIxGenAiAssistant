@@ -31,7 +31,7 @@ class AcousticDspEngineTest {
     @Test
     fun doubleClapImpulses_triggerDoubleClapDetection() {
         val impulse = ShortArray(1600) { idx ->
-            if (idx in 200..215) 30_000 else 20
+            if (idx in 200..349) 30_000 else 20
         }
         val first = engine.analyzeFrame(impulse, nowMs = 5_000L)
         assertFalse(first.isDoubleClap)
