@@ -18,4 +18,6 @@ object KaiRoutesV2 {
 const val PROFILE_ACCOUNT = "profile_account"
     const val SUBSCRIPTION_PRO = "subscription_pro"
     const val HYPER_SECURITY_CENTER = "hyper_security_center"
+    const val STUDENT_MODE = "student_mode"
+    const val SENIOR_MODE = "senior_mode"
 }
