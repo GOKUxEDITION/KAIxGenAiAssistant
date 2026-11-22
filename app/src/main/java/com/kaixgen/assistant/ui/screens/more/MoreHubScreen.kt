@@ -119,6 +119,7 @@ fun MoreHubScreen(
     onNavigateToRealLifeHub: () -> Unit = {},
     onNavigateToSuperUtilities: () -> Unit = {},
     onNavigateToSmartMoney: () -> Unit = {},
+onNavigateToProfileAccount: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val extendedColors = KaiTheme.extendedColors
@@ -304,6 +305,13 @@ fun MoreHubScreen(
                 onClick = onNavigateToSuperUtilities,
                 testTag = "more_super_utilities_row"
             )
+MoreNavRowCard(
+icon = Icons.Rounded.PrivacyTip,
+title = "Profile & Optional Account",
+subtitle = "Offline guest profile & optional cloud sync status",
+onClick = onNavigateToProfileAccount,
+testTag = "more_profile_account_row"
+)
             MoreNavRowCard(
                 icon = Icons.Rounded.Timer,
                 title = "Smart Money (EMI, GST & Bill Split)",
