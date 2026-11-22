@@ -1,7 +1,6 @@
 package com.kaixgen.assistant.ui.theme
 
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -26,47 +25,65 @@ data class KaiExtendedColors(
     val warningContainer: Color,
     val cardSurface: Color,
     val cardBorder: Color,
-    val subtleShadow: Color
+    val subtleShadow: Color,
+    val secondaryBackground: Color = KaiCharcoalBg,
+    val elevatedSurface: Color = KaiElevatedCharcoal,
+    val glassSurface: Color = KaiGlassOverlay,
+    val glassBorder: Color = KaiGlassBorder,
+    val mutedText: Color = KaiTextMutedDark,
+    val divider: Color = KaiDividerDark
 )
 
 private val LightExtendedColors = KaiExtendedColors(
     brandDeep = KaiBlueDeep,
-    cyanAccent = KaiCyanAccent,
+    cyanAccent = KaiOrangeSecondary,
     cyanGlow = KaiCyanGlow,
-    micContainer = KaiSkyTint,
+    micContainer = KaiOrangeTintLight,
     lockContainer = KaiGreenTint,
     success = KaiGreenSuccess,
     warning = KaiWarningOrange,
     warningContainer = KaiWarningTint,
     cardSurface = KaiCardLight,
-    cardBorder = Color(0xFFEEF2F7),
-    subtleShadow = Color(0x140E3572)
+    cardBorder = KaiOutlineLight,
+    subtleShadow = Color(0x140B0D10),
+    secondaryBackground = KaiSurfaceVariantLight,
+    elevatedSurface = KaiCardLight,
+    glassSurface = Color(0xE6FFFFFF),
+    glassBorder = KaiOutlineLight,
+    mutedText = Color(0xFF737B87),
+    divider = KaiOutlineLight
 )
 
 private val DarkExtendedColors = KaiExtendedColors(
-    brandDeep = Color(0xFFD6E6FF),
-    cyanAccent = KaiCyanAccentDark,
-    cyanGlow = Color(0xFF0EA5E9),
-    micContainer = KaiSkyTintDark,
+    brandDeep = KaiTextPrimaryDark,
+    cyanAccent = KaiOrangeSecondary,
+    cyanGlow = KaiOrangePrimary,
+    micContainer = KaiOrangeTintDark,
     lockContainer = KaiGreenTintDark,
-    success = Color(0xFF34D399),
-    warning = Color(0xFFFBBF24),
-    warningContainer = Color(0xFF33270F),
-    cardSurface = KaiCardDark,
-    cardBorder = KaiOutlineDark,
-    subtleShadow = Color(0x40000000)
+    success = KaiGreenSuccess,
+    warning = KaiWarningOrange,
+    warningContainer = KaiWarningTintDark,
+    cardSurface = KaiSurfaceCharcoal,
+    cardBorder = KaiDividerDark,
+    subtleShadow = Color(0x55000000),
+    secondaryBackground = KaiCharcoalBg,
+    elevatedSurface = KaiElevatedCharcoal,
+    glassSurface = KaiGlassOverlay,
+    glassBorder = KaiGlassBorder,
+    mutedText = KaiTextMutedDark,
+    divider = KaiDividerDark
 )
 
-val LocalKaiColors = staticCompositionLocalOf { LightExtendedColors }
+val LocalKaiColors = staticCompositionLocalOf { DarkExtendedColors }
 
 private val KaiLightColorScheme = lightColorScheme(
-    primary = KaiBluePrimary,
+    primary = KaiOrangePrimary,
     onPrimary = Color.White,
-    primaryContainer = KaiSkyTint,
+    primaryContainer = KaiOrangeTintLight,
     onPrimaryContainer = KaiBlueDeep,
-    secondary = KaiCyanAccent,
+    secondary = KaiOrangeSecondary,
     onSecondary = Color.White,
-    secondaryContainer = Color(0xFFE0F4FF),
+    secondaryContainer = Color(0xFFFFF1EB),
     onSecondaryContainer = KaiBlueDeep,
     tertiary = KaiGreenSuccess,
     onTertiary = Color.White,
@@ -86,29 +103,29 @@ private val KaiLightColorScheme = lightColorScheme(
 )
 
 private val KaiDarkColorScheme = darkColorScheme(
-    primary = KaiBluePrimaryDark,
-    onPrimary = Color(0xFF061B3A),
-    primaryContainer = KaiSkyTintDark,
-    onPrimaryContainer = Color(0xFFD6E6FF),
-    secondary = KaiCyanAccentDark,
-    onSecondary = Color(0xFF042235),
-    secondaryContainer = Color(0xFF103452),
-    onSecondaryContainer = Color(0xFFC5EBFF),
-    tertiary = Color(0xFF34D399),
+    primary = KaiOrangePrimary,
+    onPrimary = Color(0xFF0B0D10),
+    primaryContainer = KaiOrangeTintDark,
+    onPrimaryContainer = Color(0xFFFFD8C8),
+    secondary = KaiOrangeSecondary,
+    onSecondary = Color(0xFF0B0D10),
+    secondaryContainer = KaiElevatedCharcoal,
+    onSecondaryContainer = KaiTextPrimaryDark,
+    tertiary = KaiGreenSuccess,
     onTertiary = Color(0xFF052E1B),
     tertiaryContainer = KaiGreenTintDark,
     onTertiaryContainer = Color(0xFFA7F3D0),
-    background = KaiSurfaceDark,
+    background = KaiObsidianBg,
     onBackground = KaiTextPrimaryDark,
-    surface = KaiCardDark,
+    surface = KaiSurfaceCharcoal,
     onSurface = KaiTextPrimaryDark,
-    surfaceVariant = KaiSurfaceVariantDark,
+    surfaceVariant = KaiElevatedCharcoal,
     onSurfaceVariant = KaiTextSecondaryDark,
-    outline = KaiOutlineDark,
-    error = Color(0xFFF87171),
-    onError = Color(0xFF450A0A),
-    errorContainer = Color(0xFF451414),
-    onErrorContainer = Color(0xFFFECACA)
+    outline = KaiDividerDark,
+    error = KaiDangerRed,
+    onError = Color(0xFF2B0808),
+    errorContainer = KaiDangerTintDark,
+    onErrorContainer = Color(0xFFFFCACA)
 )
 
 object KaiTheme {
@@ -118,7 +135,7 @@ object KaiTheme {
 
 @Composable
 fun KAIxGenTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = true,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
