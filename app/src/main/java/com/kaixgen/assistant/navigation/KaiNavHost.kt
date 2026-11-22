@@ -48,6 +48,9 @@ import com.kaixgen.assistant.ui.screens.security.SecurityHealthAndIntruderScreen
 import com.kaixgen.assistant.ui.screens.security.VoiceprintManagerScreen
 import com.kaixgen.assistant.ui.screens.settings.PrivacyAndOemWizardScreen
 import com.kaixgen.assistant.ui.components.KaiFloatingBottomBar
+import com.kaixgen.assistant.ui.screens.assistant.AiToolsHubScreen
+import com.kaixgen.assistant.ui.screens.assistant.KaiAiChatScreen
+import com.kaixgen.assistant.ui.screens.settings.AboutKaiScreen
 import com.kaixgen.assistant.ui.screens.buddy.CommandHelpAndAliasesScreen
 import com.kaixgen.assistant.ui.screens.buddy.KaiBuddyScreen
 import com.kaixgen.assistant.ui.screens.findphone.FindPhoneScreen
@@ -116,7 +119,10 @@ fun KaiMainNavigationHost(
         KaiRoutesV2.DRIVING_MODE,
         KaiRoutesV2.INTERPRETER_MEMORY,
         KaiRoutesV2.PRODUCTIVITY_HUB,
-        KaiRoutesV2.PRIVACY_OEM_WIZARD
+        KaiRoutesV2.PRIVACY_OEM_WIZARD,
+        KaiRoutesV2.AI_CHAT,
+        KaiRoutesV2.AI_TOOLS_HUB,
+        KaiRoutesV2.ABOUT_KAI
     )
     val showNavigationChrome = currentRoute !in fullScreenSubRoutes
 
@@ -471,6 +477,30 @@ fun KaiMainNavigationHost(
                         onBack = { navController.popBackStack() }
                     )
                 }
+            composable(KaiRoutesV2.AI_CHAT) {
+                KaiAiChatScreen(
+                    onOpenVoiceMode = { navigateToTab(KaiBottomTab.KAI_BUDDY) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(KaiRoutesV2.AI_TOOLS_HUB) {
+                AiToolsHubScreen(
+                    onOpenAiChat = { navController.navigate(KaiRoutesV2.AI_CHAT) },
+                    onOpenInterpreterMemory = { navController.navigate(KaiRoutesV2.INTERPRETER_MEMORY) },
+                    onOpenProductivity = { navController.navigate(KaiRoutesV2.PRODUCTIVITY_HUB) },
+                    onOpenDrivingMode = { navController.navigate(KaiRoutesV2.DRIVING_MODE) },
+                    onOpenSecurityHealth = { navController.navigate(KaiRoutesV2.SECURITY_HEALTH_INTRUDER) },
+                    onOpenVoiceprint = { navController.navigate(KaiRoutesV2.VOICEPRINT_MANAGER) },
+                    onOpenSafetyHub = { navController.navigate(KaiRoutesV2.SAFETY_HUB) },
+                    onOpenPrivacyWizard = { navController.navigate(KaiRoutesV2.PRIVACY_OEM_WIZARD) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(KaiRoutesV2.ABOUT_KAI) {
+                AboutKaiScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
                 }
 
                 if (!useNavigationRail && showNavigationChrome) {
