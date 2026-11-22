@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import com.kaixgen.assistant.ui.screens.settings.ProfileAccountScreen
 import com.kaixgen.assistant.ui.screens.settings.SubscriptionPaywallScreen
+import com.kaixgen.assistant.ui.screens.security.HyperSecurityCenterScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -123,6 +124,7 @@ fun KaiMainNavigationHost(
         KaiRoutes.COMMAND_HELP_ALIASES,
         KaiRoutes.DIAGNOSTICS,
         KaiRoutesV2.SECURITY_HEALTH_INTRUDER,
+        KaiRoutesV2.HYPER_SECURITY_CENTER,
         KaiRoutesV2.VOICEPRINT_MANAGER,
         KaiRoutesV2.SAFETY_HUB,
         KaiRoutesV2.DRIVING_MODE,
@@ -417,6 +419,7 @@ KaiRoutesV2.PROFILE_ACCOUNT,
 onNavigateToProfileAccount = { navController.navigate(KaiRoutesV2.PROFILE_ACCOUNT) },
                     onNavigateToSubscriptionPro = { navController.navigate(KaiRoutesV2.SUBSCRIPTION_PRO) },
                             isWakeWordActive = settingsState.wakeWordEnabled,
+                      onNavigateToHyperSecurity = { navController.navigate(KaiRoutesV2.HYPER_SECURITY_CENTER) },
                             onRefreshDeviceStatus = moreHubViewModel::refreshDeviceStatus,
                             onToggleFlashlight = moreHubViewModel::toggleFlashlight,
                             onOpenDrivingMode = moreHubViewModel::openDrivingModeSheet,
@@ -559,6 +562,14 @@ composable(KaiRoutesV2.PROFILE_ACCOUNT) { ProfileAccountScreen(onBack = { navCon
                     onBack = { navController.popBackStack() }
                 )
         }
+                    composable(KaiRoutesV2.HYPER_SECURITY_CENTER) {
+                        HyperSecurityCenterScreen(
+                                onOpenVoiceprint = { navController.navigate(KaiRoutesV2.VOICEPRINT_MANAGER) },
+                                onOpenIntruderVault = { navController.navigate(KaiRoutesV2.SECURITY_HEALTH_INTRUDER) },
+                               onOpenSafetySos = { navController.navigate(KaiRoutesV2.SAFETY_HUB) },
+                               onBack = { navController.popBackStack() }
+                           )
+                    }
                 }
                 if (!useNavigationRail && showNavigationChrome) {
                     KaiFloatingBottomBar(
