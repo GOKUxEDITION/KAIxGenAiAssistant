@@ -119,6 +119,7 @@ fun MoreHubScreen(
     onNavigateToRealLifeHub: () -> Unit = {},
     onNavigateToSuperUtilities: () -> Unit = {},
     onNavigateToSmartMoney: () -> Unit = {},
+    onNavigateToSubscriptionPro: () -> Unit = {},
 onNavigateToProfileAccount: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -298,6 +299,13 @@ onNavigateToProfileAccount: () -> Unit = {},
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.primary
         )
+            MoreNavRowCard(
+                icon = Icons.Rounded.AutoAwesome,
+                title = "KAI Pro Subscription (Free vs Pro)",
+                subtitle = "Compare Free vs KAI Pro plans, ₹79/mo • ₹599/yr • ₹1,299 Lifetime",
+                onClick = onNavigateToSubscriptionPro,
+                testTag = "more_subscription_pro_row"
+            )
             MoreNavRowCard(
                 icon = Icons.Rounded.AutoAwesome,
                 title = "KAI Super Utilities (Direct WA, Battery Alert, 112)",
