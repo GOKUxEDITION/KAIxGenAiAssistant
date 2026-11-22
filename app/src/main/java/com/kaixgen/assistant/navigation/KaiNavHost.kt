@@ -46,6 +46,7 @@ import com.kaixgen.assistant.ui.screens.productivity.ProductivityHubScreen
 import com.kaixgen.assistant.ui.screens.safety.SafetyHubScreen
 import com.kaixgen.assistant.ui.screens.security.SecurityHealthAndIntruderScreen
 import com.kaixgen.assistant.ui.screens.security.VoiceprintManagerScreen
+import com.kaixgen.assistant.ui.screens.security.RealLifePowerHubScreen
 import com.kaixgen.assistant.ui.screens.settings.PrivacyAndOemWizardScreen
 import com.kaixgen.assistant.ui.components.KaiFloatingBottomBar
 import com.kaixgen.assistant.ui.screens.assistant.AiToolsHubScreen
@@ -122,7 +123,8 @@ fun KaiMainNavigationHost(
         KaiRoutesV2.PRIVACY_OEM_WIZARD,
         KaiRoutesV2.AI_CHAT,
         KaiRoutesV2.AI_TOOLS_HUB,
-        KaiRoutesV2.ABOUT_KAI
+        KaiRoutesV2.ABOUT_KAI,
+        KaiRoutesV2.REAL_LIFE_POWER_HUB
     )
     val showNavigationChrome = currentRoute !in fullScreenSubRoutes
 
@@ -406,7 +408,8 @@ fun KaiMainNavigationHost(
                     onNavigateToPrivacyOem = { navController.navigate(KaiRoutesV2.PRIVACY_OEM_WIZARD) } ,
                             onNavigateToAiChat = { navController.navigate(KaiRoutesV2.AI_CHAT) },
                             onNavigateToAiToolsHub = { navController.navigate(KaiRoutesV2.AI_TOOLS_HUB) },
-                            onNavigateToAboutKai = { navController.navigate(KaiRoutesV2.ABOUT_KAI) }
+                            onNavigateToAboutKai = { navController.navigate(KaiRoutesV2.ABOUT_KAI) },
+                onNavigateToRealLifeHub = { navController.navigate(KaiRoutesV2.REAL_LIFE_POWER_HUB) }
                         )
                     }
 
@@ -504,6 +507,9 @@ fun KaiMainNavigationHost(
                     onBack = { navController.popBackStack() }
                 )
             }
+        composable(KaiRoutesV2.REAL_LIFE_POWER_HUB) {
+            RealLifePowerHubScreen(onBack = { navController.popBackStack() })
+        }
                 }
 
                 if (!useNavigationRail && showNavigationChrome) {
