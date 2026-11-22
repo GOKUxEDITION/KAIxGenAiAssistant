@@ -3,6 +3,7 @@ package com.kaixgen.assistant.navigation
 import android.content.Context
 import android.os.Build
 import com.kaixgen.assistant.ui.screens.settings.ProfileAccountScreen
+import com.kaixgen.assistant.ui.screens.settings.SubscriptionPaywallScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -127,6 +128,7 @@ fun KaiMainNavigationHost(
         KaiRoutesV2.DRIVING_MODE,
         KaiRoutesV2.INTERPRETER_MEMORY,
         KaiRoutesV2.PRODUCTIVITY_HUB,
+        KaiRoutesV2.SUBSCRIPTION_PRO,
 KaiRoutesV2.PROFILE_ACCOUNT,
         KaiRoutesV2.PRIVACY_OEM_WIZARD,
         KaiRoutesV2.AI_CHAT,
@@ -413,6 +415,7 @@ KaiRoutesV2.PROFILE_ACCOUNT,
                         MoreHubScreen(
                             uiState = uiState,
 onNavigateToProfileAccount = { navController.navigate(KaiRoutesV2.PROFILE_ACCOUNT) },
+                    onNavigateToSubscriptionPro = { navController.navigate(KaiRoutesV2.SUBSCRIPTION_PRO) },
                             isWakeWordActive = settingsState.wakeWordEnabled,
                             onRefreshDeviceStatus = moreHubViewModel::refreshDeviceStatus,
                             onToggleFlashlight = moreHubViewModel::toggleFlashlight,
@@ -516,6 +519,7 @@ onNavigateToProfileAccount = { navController.navigate(KaiRoutesV2.PROFILE_ACCOUN
                     )
                 }
 composable(KaiRoutesV2.PROFILE_ACCOUNT) { ProfileAccountScreen(onBack = { navController.popBackStack() }) }
+        composable(KaiRoutesV2.SUBSCRIPTION_PRO) { SubscriptionPaywallScreen(onBack = { navController.popBackStack() }) }
             composable(KaiRoutesV2.AI_CHAT) {
                 KaiAiChatScreen(
                     onOpenVoiceMode = { navigateToTab(KaiBottomTab.KAI_BUDDY) },
