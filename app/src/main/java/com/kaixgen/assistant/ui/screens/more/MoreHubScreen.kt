@@ -116,6 +116,7 @@ fun MoreHubScreen(
     onNavigateToAiChat: () -> Unit = {},
     onNavigateToAiToolsHub: () -> Unit = {},
     onNavigateToAboutKai: () -> Unit = {},
+    onNavigateToRealLifeHub: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val extendedColors = KaiTheme.extendedColors
@@ -293,6 +294,13 @@ fun MoreHubScreen(
             text = "KAI v2.1 Pro Suite",
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.primary
+        )
+        MoreNavRowCard(
+            icon = Icons.Rounded.Security,
+            title = "Custom Voice Lock/Unlock & Anti-Theft",
+            subtitle = "Custom lock/unlock words, anti-theft guard & Hinglish calculator",
+            onClick = onNavigateToRealLifeHub,
+            testTag = "more_real_life_hub_row"
         )
             MoreNavRowCard(
                 icon = Icons.AutoMirrored.Rounded.Chat,
