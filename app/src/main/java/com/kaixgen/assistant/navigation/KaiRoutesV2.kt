@@ -15,4 +15,5 @@ object KaiRoutesV2 {
     const val SUPER_UTILITIES_HUB = "super_utilities_hub"
     const val SMART_MONEY_TOOLS = "smart_money_tools"
     const val WELCOME_ONBOARDING = "welcome_onboarding"
+const val PROFILE_ACCOUNT = "profile_account"
 }
