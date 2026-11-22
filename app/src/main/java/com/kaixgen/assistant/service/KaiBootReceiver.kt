@@ -10,7 +10,7 @@ class KaiBootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
         val app = context.applicationContext as? KaiApplication ?: return
-        val lockEnabled = app.appContainer.repository.voiceLockConfig.value.isEnabled
+        val lockEnabled = app.appContainer.localRepository.voiceLockConfig.value.isEnabled
         if (lockEnabled) {
             ContextCompat.startForegroundService(
                 context,
