@@ -39,7 +39,7 @@ class KaiApplication : Application() {
         )
         dynamicRoutineEngine = DynamicRoutineEngine(
             actionExecutor = appContainer.actionExecutor,
-            parser = appContainer.parser,
+            parser = appContainer.commandParser,
             ttsManager = appContainer.ttsManager
         )
         intruderSelfieCapture = IntruderSelfieCapture(applicationContext)
