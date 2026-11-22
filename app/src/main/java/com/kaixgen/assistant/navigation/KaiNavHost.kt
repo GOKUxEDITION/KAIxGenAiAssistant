@@ -48,6 +48,8 @@ import com.kaixgen.assistant.ui.screens.security.SecurityHealthAndIntruderScreen
 import com.kaixgen.assistant.ui.screens.security.VoiceprintManagerScreen
 import com.kaixgen.assistant.ui.screens.security.RealLifePowerHubScreen
 import com.kaixgen.assistant.ui.screens.settings.PrivacyAndOemWizardScreen
+import com.kaixgen.assistant.ui.screens.more.SuperUtilitiesHubScreen
+import com.kaixgen.assistant.ui.screens.productivity.SmartMoneyToolsScreen
 import com.kaixgen.assistant.ui.components.KaiFloatingBottomBar
 import com.kaixgen.assistant.ui.screens.assistant.AiToolsHubScreen
 import com.kaixgen.assistant.ui.screens.assistant.KaiAiChatScreen
@@ -124,7 +126,9 @@ fun KaiMainNavigationHost(
         KaiRoutesV2.AI_CHAT,
         KaiRoutesV2.AI_TOOLS_HUB,
         KaiRoutesV2.ABOUT_KAI,
-        KaiRoutesV2.REAL_LIFE_POWER_HUB
+        KaiRoutesV2.REAL_LIFE_POWER_HUB,
+        KaiRoutesV2.SUPER_UTILITIES_HUB,
+        KaiRoutesV2.SMART_MONEY_TOOLS        
     )
     val showNavigationChrome = currentRoute !in fullScreenSubRoutes
 
@@ -409,7 +413,9 @@ fun KaiMainNavigationHost(
                             onNavigateToAiChat = { navController.navigate(KaiRoutesV2.AI_CHAT) },
                             onNavigateToAiToolsHub = { navController.navigate(KaiRoutesV2.AI_TOOLS_HUB) },
                             onNavigateToAboutKai = { navController.navigate(KaiRoutesV2.ABOUT_KAI) },
-                onNavigateToRealLifeHub = { navController.navigate(KaiRoutesV2.REAL_LIFE_POWER_HUB) }
+                onNavigateToRealLifeHub = { navController.navigate(KaiRoutesV2.REAL_LIFE_POWER_HUB) },
+                          onNavigateToSuperUtilities = { navController.navigate(KaiRoutesV2.SUPER_UTILITIES_HUB) },
+                           onNavigateToSmartMoney = { navController.navigate(KaiRoutesV2.SMART_MONEY_TOOLS) } 
                         )
                     }
 
@@ -510,8 +516,19 @@ fun KaiMainNavigationHost(
         composable(KaiRoutesV2.REAL_LIFE_POWER_HUB) {
             RealLifePowerHubScreen(onBack = { navController.popBackStack() })
         }
-                }
+        composable(KaiRoutesV2.SUPER_UTILITIES_HUB) {
+            SuperUtilitiesHubScreen(
+                    onOpenMoneyTools = { navController.navigate(KaiRoutesV2.SMART_MONEY_TOOLS) }, 
+                    onBack = { navController.popBackStack() }
+                )
+        }
 
+        composable(KaiRoutesV2.SMART_MONEY_TOOLS) {
+            SmartMoneyToolsScreen(
+                    onBack = { navController.popBackStack() }
+                )
+        }
+                }
                 if (!useNavigationRail && showNavigationChrome) {
                     KaiFloatingBottomBar(
                         selectedTab = selectedTab,
