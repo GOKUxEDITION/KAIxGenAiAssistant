@@ -2,6 +2,7 @@ package com.kaixgen.assistant.domain.model
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Chat
+import androidx.compose.material.icons.rounded.AccessibilityNew
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Build
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.rounded.GraphicEq
 import androidx.compose.material.icons.rounded.HelpOutline
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.PrivacyTip
+import androidx.compose.material.icons.rounded.School
 import androidx.compose.material.icons.rounded.Security
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Shield
@@ -47,6 +49,7 @@ object KaiFeatureRegistry {
         KaiFeatureItem("ai_tools", "AI Tools Hub", "All intelligent workflows", KaiFeatureCategory.AI, Icons.Rounded.AutoAwesome, KaiRoutesV2.AI_TOOLS_HUB, false, "more_ai_tools_hub_row"),
         KaiFeatureItem("interpreter", "Interpreter & Memory", "Live Hindi/English & saved facts", KaiFeatureCategory.AI, Icons.Rounded.Translate, KaiRoutesV2.INTERPRETER_MEMORY, true, "more_interpreter_memory_row"),
 
+        KaiFeatureItem("student_mode", "Student Study Mode", "Flashcards, focus timer & AI tutor (padhai)", KaiFeatureCategory.AI, Icons.Rounded.School, KaiRoutesV2.STUDENT_MODE, false, "more_student_mode_row"),
         // Privacy & Security
         KaiFeatureItem("hyper_security", "Hyper Security Shield", "Threat scan, Decoy PIN & Panic lock", KaiFeatureCategory.SECURITY, Icons.Rounded.GppGood, KaiRoutesV2.HYPER_SECURITY_CENTER, true, "more_hyper_security_row"),
         KaiFeatureItem("custom_lock", "Custom Lock & Anti-Theft", "Custom words, charger & snatch guard", KaiFeatureCategory.SECURITY, Icons.Rounded.Security, KaiRoutesV2.REAL_LIFE_POWER_HUB, true, "more_real_life_hub_row"),
@@ -56,7 +59,8 @@ object KaiFeatureRegistry {
         // Personal Safety & Driving
         KaiFeatureItem("safety_hub", "SOS & Fake Call", "Emergency alert, 112 & medical card", KaiFeatureCategory.SAFETY, Icons.Rounded.Shield, KaiRoutesV2.SAFETY_HUB, false, "more_safety_hub_row"),
         KaiFeatureItem("driving_mode", "Driving Cockpit", "Hands-free commute & parking pin", KaiFeatureCategory.SAFETY, Icons.Rounded.DirectionsCar, KaiRoutesV2.DRIVING_MODE, true, "more_full_driving_row"),
-
+        KaiFeatureItem("senior_mode", "Senior Citizen Mode", "Large buttons, dawai alarm & 112 (bujurg)", KaiFeatureCategory.SAFETY, Icons.Rounded.AccessibilityNew, KaiRoutesV2.SENIOR_MODE, false, "more_senior_mode_row"),
+        
         // Everyday Utilities
         KaiFeatureItem("super_utils", "Direct WhatsApp & Alerts", "Message without saving, battery voice", KaiFeatureCategory.UTILITIES, Icons.Rounded.AutoAwesome, KaiRoutesV2.SUPER_UTILITIES_HUB, false, "more_super_utilities_row"),
         KaiFeatureItem("smart_money", "Smart Money", "EMI, GST & friends bill split", KaiFeatureCategory.UTILITIES, Icons.Rounded.Timer, KaiRoutesV2.SMART_MONEY_TOOLS, false, "more_smart_money_row"),
