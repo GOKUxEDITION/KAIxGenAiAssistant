@@ -403,7 +403,10 @@ fun KaiMainNavigationHost(
                     onNavigateToFullDriving = { navController.navigate(KaiRoutesV2.DRIVING_MODE) },
                     onNavigateToInterpreterMemory = { navController.navigate(KaiRoutesV2.INTERPRETER_MEMORY) },
                     onNavigateToProductivityHub = { navController.navigate(KaiRoutesV2.PRODUCTIVITY_HUB) },
-                    onNavigateToPrivacyOem = { navController.navigate(KaiRoutesV2.PRIVACY_OEM_WIZARD) } 
+                    onNavigateToPrivacyOem = { navController.navigate(KaiRoutesV2.PRIVACY_OEM_WIZARD) } ,
+                            onNavigateToAiChat = { navController.navigate(KaiRoutesV2.AI_CHAT) },
+                            onNavigateToAiToolsHub = { navController.navigate(KaiRoutesV2.AI_TOOLS_HUB) },
+                            onNavigateToAboutKai = { navController.navigate(KaiRoutesV2.ABOUT_KAI) }
                         )
                     }
 
