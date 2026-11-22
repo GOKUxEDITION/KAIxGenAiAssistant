@@ -390,14 +390,14 @@ fun KaiMainNavigationHost(
                             onNavigateToVoiceBuddy = { navigateToTab(KaiBottomTab.KAI_BUDDY) },
                             onNavigateToCommandHelp = { navController.navigate(KaiRoutes.COMMAND_HELP_ALIASES) },
                             onNavigateToDiagnostics = { navController.navigate(KaiRoutes.DIAGNOSTICS) },
-                            onNavigateToSettings = { navController.navigate(KaiRoutes.SETTINGS),
+                            onNavigateToSettings = { navController.navigate(KaiRoutes.SETTINGS) },
                     onNavigateToSecurityHealth = { navController.navigate(KaiRoutesV2.SECURITY_HEALTH_INTRUDER) },
                     onNavigateToVoiceprint = { navController.navigate(KaiRoutesV2.VOICEPRINT_MANAGER) },
                     onNavigateToSafetyHub = { navController.navigate(KaiRoutesV2.SAFETY_HUB) },
                     onNavigateToFullDriving = { navController.navigate(KaiRoutesV2.DRIVING_MODE) },
                     onNavigateToInterpreterMemory = { navController.navigate(KaiRoutesV2.INTERPRETER_MEMORY) },
                     onNavigateToProductivityHub = { navController.navigate(KaiRoutesV2.PRODUCTIVITY_HUB) },
-                    onNavigateToPrivacyOem = { navController.navigate(KaiRoutesV2.PRIVACY_OEM_WIZARD) } }
+                    onNavigateToPrivacyOem = { navController.navigate(KaiRoutesV2.PRIVACY_OEM_WIZARD) } 
                         )
                     }
 
