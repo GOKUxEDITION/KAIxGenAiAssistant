@@ -20,7 +20,8 @@ import com.kaixgen.assistant.ui.viewmodel.SettingsViewModel
 
 class MainActivity : FragmentActivity() {
 
-    private val appContainer by lazy { KaiAppContainer(applicationContext) }
+    private val appContainer: KaiAppContainer
+        get() = (application as KaiApplication).appContainer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +53,5 @@ class MainActivity : FragmentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isFinishing) {
-            appContainer.release()
-        }
     }
 }
