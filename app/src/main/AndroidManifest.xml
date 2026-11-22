@@ -76,12 +76,45 @@
                 android:value="per_app_voice_vault_protection" />
         </service>
 
+        <service
+            android:name="com.kaixgen.assistant.service.KaiListenTileService"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="KAI Listen"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.kaixgen.assistant.service.KaiFindPhoneTileService"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Find Phone"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
         <receiver
             android:name="com.kaixgen.assistant.service.KaiBootReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.kaixgen.assistant.service.KaiPublicIntentReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.kai.action.SPEAK" />
+                <action android:name="com.kai.action.FIND_PHONE_RING" />
+                <action android:name="com.kai.action.STOP_RING" />
             </intent-filter>
         </receiver>
 
