@@ -11,4 +11,5 @@ object KaiRoutesV2 {
     const val AI_CHAT = "ai_chat"
     const val AI_TOOLS_HUB = "ai_tools_hub"
     const val ABOUT_KAI = "about_kai"
+    const val REAL_LIFE_POWER_HUB = "real_life_power_hub"
 }
