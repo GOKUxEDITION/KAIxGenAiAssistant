@@ -5,6 +5,8 @@ import android.os.Build
 import com.kaixgen.assistant.ui.screens.settings.ProfileAccountScreen
 import com.kaixgen.assistant.ui.screens.settings.SubscriptionPaywallScreen
 import com.kaixgen.assistant.ui.screens.security.HyperSecurityCenterScreen
+import com.kaixgen.assistant.ui.screens.safety.SeniorModeScreen
+import com.kaixgen.assistant.ui.screens.assistant.StudentModeScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -123,6 +125,8 @@ fun KaiMainNavigationHost(
         KaiRoutes.VOICE_LOCK_OVERLAY,
         KaiRoutes.COMMAND_HELP_ALIASES,
         KaiRoutes.DIAGNOSTICS,
+            KaiRoutesV2.STUDENT_MODE,
+            KaiRoutesV2.SENIOR_MODE,
         KaiRoutesV2.SECURITY_HEALTH_INTRUDER,
         KaiRoutesV2.HYPER_SECURITY_CENTER,
         KaiRoutesV2.VOICEPRINT_MANAGER,
@@ -419,7 +423,9 @@ KaiRoutesV2.PROFILE_ACCOUNT,
 onNavigateToProfileAccount = { navController.navigate(KaiRoutesV2.PROFILE_ACCOUNT) },
                     onNavigateToSubscriptionPro = { navController.navigate(KaiRoutesV2.SUBSCRIPTION_PRO) },
                             isWakeWordActive = settingsState.wakeWordEnabled,
-                      onNavigateToHyperSecurity = { navController.navigate(KaiRoutesV2.HYPER_SECURITY_CENTER) },
+                onNavigateToStudentMode = { navController.navigate(KaiRoutesV2.STUDENT_MODE) },
+                onNavigateToSeniorMode = { navController.navigate(KaiRoutesV2.SENIOR_MODE) },
+                            onNavigateToHyperSecurity = { navController.navigate(KaiRoutesV2.HYPER_SECURITY_CENTER) },
                             onRefreshDeviceStatus = moreHubViewModel::refreshDeviceStatus,
                             onToggleFlashlight = moreHubViewModel::toggleFlashlight,
                             onOpenDrivingMode = moreHubViewModel::openDrivingModeSheet,
@@ -570,6 +576,7 @@ composable(KaiRoutesV2.PROFILE_ACCOUNT) { ProfileAccountScreen(onBack = { navCon
                                onBack = { navController.popBackStack() }
                            )
                     }
+            composable(KaiRoutesV2.STUDENT_MODE) { StudentModeScreen(onOpenAiTutorChat = { navController.navigate(KaiRoutesV2.AI_C; composable(KaiRoutesV2.SENIOR_MODE) { SeniorModeScreen(onOpenVoiceBuddy = { navigateToTab(KaiBottomTab.KAI_BUDDY) }, onBack = { navController.popBackStack() }) }HAT) }, onBack = { navController.popBackStack() }) }
                 }
                 if (!useNavigationRail && showNavigationChrome) {
                     KaiFloatingBottomBar(
