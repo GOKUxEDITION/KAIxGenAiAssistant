@@ -21,6 +21,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.automirrored.rounded.Chat
+import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.BatteryChargingFull
 import androidx.compose.material.icons.rounded.BatteryStd
 import androidx.compose.material.icons.rounded.Build
@@ -110,6 +113,9 @@ fun MoreHubScreen(
     onNavigateToInterpreterMemory: () -> Unit = {},
     onNavigateToProductivityHub: () -> Unit = {},
     onNavigateToPrivacyOem: () -> Unit = {},
+    onNavigateToAiChat: () -> Unit = {},
+    onNavigateToAiToolsHub: () -> Unit = {},
+    onNavigateToAboutKai: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val extendedColors = KaiTheme.extendedColors
@@ -288,7 +294,21 @@ fun MoreHubScreen(
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.primary
         )
-        MoreNavRowCard(
+            MoreNavRowCard(
+                icon = Icons.AutoMirrored.Rounded.Chat,
+                title = "KAI AI Chat (Text + Hybrid AI)",
+                subtitle = "Ask KAI anything with text & hybrid AI",
+                onClick = onNavigateToAiChat,
+                testTag = "more_ai_chat_row"
+            )
+            MoreNavRowCard(
+                icon = Icons.Rounded.AutoAwesome,
+                title = "KAI AI Tools Hub",
+                subtitle = "Writing, summarize, translate & code tools",
+                onClick = onNavigateToAiToolsHub,
+                testTag = "more_ai_tools_hub_row"
+            )
+            MoreNavRowCard(
             icon = Icons.Rounded.Security,
             title = "Security Health & Intruder Vault",
             subtitle = "Security score, intruder selfies & lock hardening",
@@ -337,6 +357,13 @@ fun MoreHubScreen(
             onClick = onNavigateToPrivacyOem,
             testTag = "more_privacy_oem_row"
         )
+            MoreNavRowCard(
+                icon = Icons.Rounded.Info,
+                title = "About KAIxGenAssistant",
+                subtitle = "App info, version & capabilities",
+                onClick = onNavigateToAboutKai,
+                testTag = "more_about_kai_row"
+            )
             // Section 3: Productivity & Quick Tasks (PRD S7-05)
             KaiElevatedCard(modifier = Modifier.testTag("more_tasks_card")) {
                 Column(
