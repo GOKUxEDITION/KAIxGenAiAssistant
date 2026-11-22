@@ -120,7 +120,8 @@ fun MoreHubScreen(
     onNavigateToSuperUtilities: () -> Unit = {},
     onNavigateToSmartMoney: () -> Unit = {},
     onNavigateToSubscriptionPro: () -> Unit = {},
-onNavigateToProfileAccount: () -> Unit = {},
+    onNavigateToHyperSecurity: () -> Unit = {},
+    onNavigateToProfileAccount: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val extendedColors = KaiTheme.extendedColors
@@ -299,6 +300,13 @@ onNavigateToProfileAccount: () -> Unit = {},
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.primary
         )
+            MoreNavRowCard(
+                icon = Icons.Rounded.Security,
+                title = "Hyper Security Shield (Threat Scan, Decoy PIN, Panic)",
+                subtitle = "Threat Scan, Decoy PIN, Panic Shield & Security Center",
+                onClick = onNavigateToHyperSecurity,
+                testTag = "more_hyper_security_row"
+            )
             MoreNavRowCard(
                 icon = Icons.Rounded.AutoAwesome,
                 title = "KAI Pro Subscription (Free vs Pro)",
