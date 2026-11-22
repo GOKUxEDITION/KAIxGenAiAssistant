@@ -2,56 +2,70 @@ package com.kaixgen.assistant.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Premium Dark Charcoal + Subtle Orange Core Palette (v3.0 Design System)
-val KaiObsidianBg = Color(0xFF0B0D10)
-val KaiCharcoalBg = Color(0xFF12151A)
-val KaiSurfaceCharcoal = Color(0xFF1A1D23)
-val KaiElevatedCharcoal = Color(0xFF22262D)
-val KaiGlassOverlay = Color(0xCC1A1D23)
-val KaiGlassBorder = Color(0x26FFFFFF)
-val KaiDividerDark = Color(0xFF2A2F38)
+// Apple iOS System Palette (Dark OLED + Light Grouped)
+val IosBlackBg = Color(0xFF000000)
+val IosGroupedDarkBg = Color(0xFF0C0C0E)
+val IosSurfaceDark = Color(0xFF1C1C1E)
+val IosElevatedDark = Color(0xFF2C2C2E)
+val IosGlassDark = Color(0xD91C1C1E)
+val IosGlassBorderDark = Color(0x2EFFFFFF)
+val IosSeparatorDark = Color(0xFF38383A)
 
-val KaiOrangePrimary = Color(0xFFFF6A35)
-val KaiOrangeSecondary = Color(0xFFFF8A50)
-val KaiOrangeTintDark = Color(0x29FF6A35)
-val KaiOrangeTintLight = Color(0xFFFFEFE9)
+val IosBlueDark = Color(0xFF0A84FF)
+val IosBlueLight = Color(0xFF007AFF)
+val IosIndigoDark = Color(0xFF5E5CE6)
+val IosIndigoLight = Color(0xFF5856D6)
+val IosBlueTintDark = Color(0x290A84FF)
+val IosBlueTintLight = Color(0x1A007AFF)
 
-// Semantic Accents
-val KaiGreenSuccess = Color(0xFF34C759)
-val KaiGreenTint = Color(0xFFE8F8EE)
-val KaiGreenTintDark = Color(0x2434C759)
-val KaiWarningOrange = Color(0xFFFFB547)
-val KaiWarningTint = Color(0xFFFFF6E5)
-val KaiWarningTintDark = Color(0x24FFB547)
-val KaiDangerRed = Color(0xFFFF5C5C)
-val KaiDangerTint = Color(0xFFFEECEB)
-val KaiDangerTintDark = Color(0x29FF5C5C)
+// iOS Semantic Colors
+val KaiGreenSuccess = Color(0xFF30D158)
+val KaiGreenTint = Color(0x1F34C759)
+val KaiGreenTintDark = Color(0x2630D158)
+val KaiWarningOrange = Color(0xFFFF9F0A)
+val KaiWarningTint = Color(0x1FFF9500)
+val KaiWarningTintDark = Color(0x26FF9F0A)
+val KaiDangerRed = Color(0xFFFF453A)
+val KaiDangerTint = Color(0x1FFF3B30)
+val KaiDangerTintDark = Color(0x29FF453A)
 
-// Legacy Brand Aliases (preserved for 100% compatibility across all existing screens)
-val KaiBluePrimary = KaiOrangePrimary
-val KaiBlueDeep = Color(0xFFC84618)
-val KaiBlueButton = KaiOrangePrimary
-val KaiCyanAccent = KaiOrangeSecondary
-val KaiCyanGlow = Color(0xFFFFA575)
-val KaiSkyTint = KaiOrangeTintLight
+// Compatibility Aliases
+val KaiObsidianBg = IosBlackBg
+val KaiCharcoalBg = IosGroupedDarkBg
+val KaiSurfaceCharcoal = IosSurfaceDark
+val KaiElevatedCharcoal = IosElevatedDark
+val KaiGlassOverlay = IosGlassDark
+val KaiGlassBorder = IosGlassBorderDark
+val KaiDividerDark = IosSeparatorDark
+val KaiOrangePrimary = IosBlueDark
+val KaiOrangeSecondary = IosIndigoDark
+val KaiOrangeTintDark = IosBlueTintDark
+val KaiOrangeTintLight = IosBlueTintLight
 
-// Light Surfaces & Text
-val KaiSurfaceLight = Color(0xFFF6F7F9)
+val KaiBluePrimary = IosBlueLight
+val KaiBlueDeep = Color(0xFF0051A8)
+val KaiBlueButton = IosBlueLight
+val KaiCyanAccent = IosBlueDark
+val KaiCyanGlow = Color(0xFF64D2FF)
+val KaiSkyTint = IosBlueTintLight
+
+// iOS Light Mode Grouped Surfaces & Labels
+val KaiSurfaceLight = Color(0xFFF2F2F7)
 val KaiCardLight = Color(0xFFFFFFFF)
-val KaiSurfaceVariantLight = Color(0xFFECEFF3)
-val KaiOutlineLight = Color(0xFFDDE2EA)
-val KaiTextPrimaryLight = Color(0xFF111318)
-val KaiTextSecondaryLight = Color(0xFF5A6270)
-val KaiIconNeutralLight = Color(0xFF475467)
+val KaiSurfaceVariantLight = Color(0xFFE5E5EA)
+val KaiOutlineLight = Color(0xFFC6C6C8)
+val KaiTextPrimaryLight = Color(0xFF000000)
+val KaiTextSecondaryLight = Color(0xFF6C6C70)
+val KaiIconNeutralLight = Color(0xFF8E8E93)
 
-// Dark Surfaces & Text
-val KaiSurfaceDark = KaiObsidianBg
-val KaiCardDark = KaiSurfaceCharcoal
-val KaiSurfaceVariantDark = KaiElevatedCharcoal
-val KaiOutlineDark = KaiDividerDark
-val KaiBluePrimaryDark = KaiOrangePrimary
-val KaiCyanAccentDark = KaiOrangeSecondary
-val KaiSkyTintDark = KaiOrangeTintDark
-val KaiTextPrimaryDark = Color(0xFFF5F5F7)
-val KaiTextSecondaryDark = Color(0xFFA7ADB7)
-val KaiTextMutedDark = Color(0xFF737B87)
+// iOS Dark Mode Surfaces & Labels
+val KaiSurfaceDark = IosBlackBg
+val KaiCardDark = IosSurfaceDark
+val KaiSurfaceVariantDark = IosElevatedDark
+val KaiOutlineDark = IosSeparatorDark
+val KaiBluePrimaryDark = IosBlueDark
+val KaiCyanAccentDark = Color(0xFF64D2FF)
+val KaiSkyTintDark = IosBlueTintDark
+val KaiTextPrimaryDark = Color(0xFFFFFFFF)
+val KaiTextSecondaryDark = Color(0xFF98989F)
+val KaiTextMutedDark = Color(0xFF636366)
