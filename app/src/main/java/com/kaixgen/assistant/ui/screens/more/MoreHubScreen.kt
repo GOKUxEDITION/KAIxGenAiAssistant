@@ -191,7 +191,7 @@ fun MoreHubScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
                             KaiCircularIconBadge(
                                 icon = if (uiState.isCharging) Icons.Rounded.BatteryChargingFull else Icons.Rounded.BatteryStd,
                                 containerColor = extendedColors.lockContainer,
@@ -215,7 +215,7 @@ fun MoreHubScreen(
                             shape = RoundedCornerShape(50),
                             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                         ) {
-                            Text("Refresh", style = MaterialTheme.typography.labelMedium)
+                            Text("Refresh", style = MaterialTheme.typography.labelMedium, maxLines = 1, softWrap = false)
                         }
                     }
 
