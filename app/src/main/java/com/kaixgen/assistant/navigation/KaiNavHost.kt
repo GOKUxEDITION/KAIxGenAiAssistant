@@ -35,6 +35,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kaixgen.assistant.R
 import com.kaixgen.assistant.di.KaiAppContainer
+import android.app.Activity
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
+import com.kaixgen.assistant.KaiApplication
+import com.kaixgen.assistant.security.ScreenSecurityHelper
+import com.kaixgen.assistant.ui.screens.assistant.InterpreterAndMemoryScreen
+import com.kaixgen.assistant.ui.screens.driving.DrivingModeScreen
+import com.kaixgen.assistant.ui.screens.productivity.ProductivityHubScreen
+import com.kaixgen.assistant.ui.screens.safety.SafetyHubScreen
+import com.kaixgen.assistant.ui.screens.security.SecurityHealthAndIntruderScreen
+import com.kaixgen.assistant.ui.screens.security.VoiceprintManagerScreen
+import com.kaixgen.assistant.ui.screens.settings.PrivacyAndOemWizardScreen
 import com.kaixgen.assistant.ui.components.KaiFloatingBottomBar
 import com.kaixgen.assistant.ui.screens.buddy.CommandHelpAndAliasesScreen
 import com.kaixgen.assistant.ui.screens.buddy.KaiBuddyScreen
@@ -65,6 +77,9 @@ fun KaiMainNavigationHost(
     settingsViewModel: SettingsViewModel,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+    val kaiApp = context.applicationContext as? KaiApplication
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: KaiRoutes.VOICE_LOCK_HOME
@@ -94,7 +109,14 @@ fun KaiMainNavigationHost(
         KaiRoutes.APP_LOCK_LIST,
         KaiRoutes.VOICE_LOCK_OVERLAY,
         KaiRoutes.COMMAND_HELP_ALIASES,
-        KaiRoutes.DIAGNOSTICS
+        KaiRoutes.DIAGNOSTICS,
+        KaiRoutesV2.SECURITY_HEALTH_INTRUDER,
+        KaiRoutesV2.VOICEPRINT_MANAGER,
+        KaiRoutesV2.SAFETY_HUB,
+        KaiRoutesV2.DRIVING_MODE,
+        KaiRoutesV2.INTERPRETER_MEMORY,
+        KaiRoutesV2.PRODUCTIVITY_HUB,
+        KaiRoutesV2.PRIVACY_OEM_WIZARD
     )
     val showNavigationChrome = currentRoute !in fullScreenSubRoutes
 
@@ -204,6 +226,10 @@ fun KaiMainNavigationHost(
                     }
 
                     composable(KaiRoutes.VOICE_LOCK_OVERLAY) {
+                    DisposableEffect(Unit) {
+                        ScreenSecurityHelper.enableScreenCaptureProtection(activity)
+                        onDispose { ScreenSecurityHelper.disableScreenCaptureProtection(activity) }
+                    }
                         val uiState by voiceLockViewModel.uiState.collectAsStateWithLifecycle()
                         VoiceLockOverlayScreen(
                             uiState = uiState,
@@ -239,6 +265,10 @@ fun KaiMainNavigationHost(
                     }
 
                     composable(KaiRoutes.SET_BACKUP_PASSCODE) {
+                    DisposableEffect(Unit) {
+                        ScreenSecurityHelper.enableScreenCaptureProtection(activity)
+                        onDispose { ScreenSecurityHelper.disableScreenCaptureProtection(activity) }
+                    }
                         val uiState by setBackupPasscodeViewModel.uiState.collectAsStateWithLifecycle()
                         SetBackupPasscodeScreen(
                             uiState = uiState,
@@ -360,7 +390,14 @@ fun KaiMainNavigationHost(
                             onNavigateToVoiceBuddy = { navigateToTab(KaiBottomTab.KAI_BUDDY) },
                             onNavigateToCommandHelp = { navController.navigate(KaiRoutes.COMMAND_HELP_ALIASES) },
                             onNavigateToDiagnostics = { navController.navigate(KaiRoutes.DIAGNOSTICS) },
-                            onNavigateToSettings = { navController.navigate(KaiRoutes.SETTINGS) }
+                            onNavigateToSettings = { navController.navigate(KaiRoutes.SETTINGS),
+                    onNavigateToSecurityHealth = { navController.navigate(KaiRoutesV2.SECURITY_HEALTH_INTRUDER) },
+                    onNavigateToVoiceprint = { navController.navigate(KaiRoutesV2.VOICEPRINT_MANAGER) },
+                    onNavigateToSafetyHub = { navController.navigate(KaiRoutesV2.SAFETY_HUB) },
+                    onNavigateToFullDriving = { navController.navigate(KaiRoutesV2.DRIVING_MODE) },
+                    onNavigateToInterpreterMemory = { navController.navigate(KaiRoutesV2.INTERPRETER_MEMORY) },
+                    onNavigateToProductivityHub = { navController.navigate(KaiRoutesV2.PRODUCTIVITY_HUB) },
+                    onNavigateToPrivacyOem = { navController.navigate(KaiRoutesV2.PRIVACY_OEM_WIZARD) } }
                         )
                     }
 
@@ -388,6 +425,52 @@ fun KaiMainNavigationHost(
                             onRunBenchmark = diagnosticsViewModel::runNluBenchmark
                         )
                     }
+                composable(KaiRoutesV2.SECURITY_HEALTH_INTRUDER) {
+                    val uiState by voiceLockViewModel.uiState.collectAsStateWithLifecycle()
+                    SecurityHealthAndIntruderScreen(
+                        hasBackupPin = !uiState.showPinRequiredWarning,
+                        isVoiceLockEnabled = uiState.config.isVoiceLockEnabled,
+                        isVoiceprintEnrolled = uiState.config.voicePhrase.isNotBlank(),
+                        lockedAppCount = uiState.lockedAppCount,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable(KaiRoutesV2.VOICEPRINT_MANAGER) {
+                    val uiState by voiceLockViewModel.uiState.collectAsStateWithLifecycle()
+                    VoiceprintManagerScreen(
+                        voicePhrase = uiState.config.voicePhrase,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable(KaiRoutesV2.SAFETY_HUB) {
+                    SafetyHubScreen(
+                        onTriggerSiren = { kaiApp?.findPhoneAlarmEngine?.startAlarm(enableFlashlight = true, enableVibrate = true) },
+                        onStopSiren = { kaiApp?.findPhoneAlarmEngine?.stopAlarm() },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable(KaiRoutesV2.DRIVING_MODE) {
+                    DrivingModeScreen(
+                        onSpeakCommand = { navigateToTab(KaiBottomTab.KAI_BUDDY) },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable(KaiRoutesV2.INTERPRETER_MEMORY) {
+                    InterpreterAndMemoryScreen(
+                        onSpeakText = { text, lang -> appContainer.ttsManager.speak(text, languageCode = lang) },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable(KaiRoutesV2.PRODUCTIVITY_HUB) {
+                    ProductivityHubScreen(
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable(KaiRoutesV2.PRIVACY_OEM_WIZARD) {
+                    PrivacyAndOemWizardScreen(
+                        onBack = { navController.popBackStack() }
+                    )
+                }
                 }
 
                 if (!useNavigationRail && showNavigationChrome) {
