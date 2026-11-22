@@ -17,4 +17,5 @@ object KaiRoutesV2 {
     const val WELCOME_ONBOARDING = "welcome_onboarding"
 const val PROFILE_ACCOUNT = "profile_account"
     const val SUBSCRIPTION_PRO = "subscription_pro"
+    const val HYPER_SECURITY_CENTER = "hyper_security_center"
 }
