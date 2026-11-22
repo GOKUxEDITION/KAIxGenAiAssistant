@@ -8,4 +8,7 @@ object KaiRoutesV2 {
     const val INTERPRETER_MEMORY = "interpreter_memory"
     const val PRODUCTIVITY_HUB = "productivity_hub"
     const val PRIVACY_OEM_WIZARD = "privacy_oem_wizard"
+    const val AI_CHAT = "ai_chat"
+    const val AI_TOOLS_HUB = "ai_tools_hub"
+    const val ABOUT_KAI = "about_kai"
 }
