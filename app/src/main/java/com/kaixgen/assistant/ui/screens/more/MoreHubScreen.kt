@@ -117,6 +117,8 @@ fun MoreHubScreen(
     onNavigateToAiToolsHub: () -> Unit = {},
     onNavigateToAboutKai: () -> Unit = {},
     onNavigateToRealLifeHub: () -> Unit = {},
+    onNavigateToSuperUtilities: () -> Unit = {},
+    onNavigateToSmartMoney: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val extendedColors = KaiTheme.extendedColors
@@ -295,7 +297,21 @@ fun MoreHubScreen(
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.primary
         )
-        MoreNavRowCard(
+            MoreNavRowCard(
+                icon = Icons.Rounded.AutoAwesome,
+                title = "KAI Super Utilities (Direct WA, Battery Alert, 112)",
+                subtitle = "Direct WhatsApp, battery alerts, emergency 112 & daily utilities",
+                onClick = onNavigateToSuperUtilities,
+                testTag = "more_super_utilities_row"
+            )
+            MoreNavRowCard(
+                icon = Icons.Rounded.Timer,
+                title = "Smart Money (EMI, GST & Bill Split)",
+                subtitle = "EMI calculator, GST breakdown & instant bill splitting",
+                onClick = onNavigateToSmartMoney,
+                testTag = "more_smart_money_row"
+            )
+            MoreNavRowCard(
             icon = Icons.Rounded.Security,
             title = "Custom Voice Lock/Unlock & Anti-Theft",
             subtitle = "Custom lock/unlock words, anti-theft guard & Hinglish calculator",
