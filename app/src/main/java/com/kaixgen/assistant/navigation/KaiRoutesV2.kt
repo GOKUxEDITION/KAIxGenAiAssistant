@@ -16,4 +16,5 @@ object KaiRoutesV2 {
     const val SMART_MONEY_TOOLS = "smart_money_tools"
     const val WELCOME_ONBOARDING = "welcome_onboarding"
 const val PROFILE_ACCOUNT = "profile_account"
+    const val SUBSCRIPTION_PRO = "subscription_pro"
 }
