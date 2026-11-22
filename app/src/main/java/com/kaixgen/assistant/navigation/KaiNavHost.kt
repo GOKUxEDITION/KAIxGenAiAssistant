@@ -1,5 +1,7 @@
 package com.kaixgen.assistant.navigation
 
+import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +55,7 @@ import com.kaixgen.assistant.ui.screens.more.SuperUtilitiesHubScreen
 import com.kaixgen.assistant.ui.screens.productivity.SmartMoneyToolsScreen
 import com.kaixgen.assistant.ui.components.KaiFloatingBottomBar
 import com.kaixgen.assistant.ui.screens.assistant.AiToolsHubScreen
+import com.kaixgen.assistant.ui.screens.onboarding.WelcomeOnboardingScreen
 import com.kaixgen.assistant.ui.screens.assistant.KaiAiChatScreen
 import com.kaixgen.assistant.ui.screens.settings.AboutKaiScreen
 import com.kaixgen.assistant.ui.screens.buddy.CommandHelpAndAliasesScreen
@@ -128,7 +132,8 @@ fun KaiMainNavigationHost(
         KaiRoutesV2.ABOUT_KAI,
         KaiRoutesV2.REAL_LIFE_POWER_HUB,
         KaiRoutesV2.SUPER_UTILITIES_HUB,
-        KaiRoutesV2.SMART_MONEY_TOOLS        
+        KaiRoutesV2.SMART_MONEY_TOOLS        ,
+        KaiRoutesV2.WELCOME_ONBOARDING
     )
     val showNavigationChrome = currentRoute !in fullScreenSubRoutes
 
@@ -140,6 +145,14 @@ fun KaiMainNavigationHost(
             launchSingleTop = true
             restoreState = true
         }
+    }
+    val onboardingPrefs = remember(context) {
+        context.getSharedPreferences("kai_onboarding_prefs", Context.MODE_PRIVATE)
+    }
+    val startRoute = remember(onboardingPrefs) {
+        val isTestEnv = Build.FINGERPRINT.equals("robolectric", ignoreCase = true)
+        val completed = onboardingPrefs.getBoolean("onboarding_completed", false)
+        if (!isTestEnv && !completed) KaiRoutesV2.WELCOME_ONBOARDING else KaiRoutes.VOICE_LOCK_HOME
     }
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
@@ -212,9 +225,19 @@ fun KaiMainNavigationHost(
             Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
                 NavHost(
                     navController = navController,
-                    startDestination = KaiRoutes.VOICE_LOCK_HOME,
+                  startDestination = startRoute,
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    composable(KaiRoutesV2.WELCOME_ONBOARDING) {
+                        WelcomeOnboardingScreen(
+                            onFinishOnboarding = {
+                                onboardingPrefs.edit().putBoolean("onboarding_completed", true).apply()
+                                navController.navigate(KaiRoutes.VOICE_LOCK_HOME) {
+                                    popUpTo(KaiRoutesV2.WELCOME_ONBOARDING) { inclusive = true }
+                                }
+                            }
+                        )
+                    }
                     composable(KaiRoutes.VOICE_LOCK_HOME) {
                         val uiState by voiceLockViewModel.uiState.collectAsStateWithLifecycle()
                         VoiceLockHomeScreen(
