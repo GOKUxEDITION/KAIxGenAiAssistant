@@ -13,9 +13,11 @@ import androidx.room.RoomDatabase
         CommandHistoryEntity::class,
         VoiceAliasEntity::class,
         RoutineEntity::class,
-        SettingEntity::class
+        SettingEntity::class,
+        VoiceprintProfileEntity::class,
+        IntruderLogEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class KaiDatabase : RoomDatabase() {
@@ -41,7 +43,7 @@ abstract class KaiDatabase : RoomDatabase() {
                     KaiDatabase::class.java,
                     DATABASE_NAME
                 )
-                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .addMigrations(MIGRATION_1_2)
                     .build()
                     .also { INSTANCE = it }
             }
