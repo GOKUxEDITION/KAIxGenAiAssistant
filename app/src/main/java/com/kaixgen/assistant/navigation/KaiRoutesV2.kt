@@ -14,4 +14,5 @@ object KaiRoutesV2 {
     const val REAL_LIFE_POWER_HUB = "real_life_power_hub"
     const val SUPER_UTILITIES_HUB = "super_utilities_hub"
     const val SMART_MONEY_TOOLS = "smart_money_tools"
+    const val WELCOME_ONBOARDING = "welcome_onboarding"
 }
