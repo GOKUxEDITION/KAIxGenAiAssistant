@@ -74,7 +74,7 @@ class KaiListeningService : Service() {
         val app = application as? KaiApplication ?: return
         val dsp = app.acousticDspEngine
         val alarmEngine = app.findPhoneAlarmEngine
-        val repo = app.appContainer.repository
+        val repo = app.appContainer.localRepository
 
         listeningJob = serviceScope.launch {
             val sampleRate = 16_000
