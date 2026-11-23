@@ -12,6 +12,12 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.Dashboard
@@ -232,12 +238,36 @@ KaiRoutesV2.PROFILE_ACCOUNT,
                 }
             }
 
-            Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
-                NavHost(
-                    navController = navController,
-                  startDestination = startRoute,
-                    modifier = Modifier.fillMaxSize()
-                ) {
+    Scaffold(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            containerColor = MaterialTheme.colorScheme.background,
+            bottomBar = {
+                if (!useNavigationRail && showNavigationChrome) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        KaiFloatingBottomBar(
+                            selectedTab = selectedTab,
+                            onTabSelected = ::navigateToTab
+                        )
+                    }
+                }
+            }
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = startRoute,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = innerPadding.calculateBottomPadding()),
+                enterTransition = { fadeIn(animationSpec = tween(200)) },
+                exitTransition = { fadeOut(animationSpec = tween(160)) },
+                popEnterTransition = { fadeIn(animationSpec = tween(200)) },
+                popExitTransition = { fadeOut(animationSpec = tween(160)) }
+            ) {
                     composable(KaiRoutesV2.WELCOME_ONBOARDING) {
                         WelcomeOnboardingScreen(
                             onFinishOnboarding = {
@@ -589,13 +619,6 @@ composable(KaiRoutesV2.PROFILE_ACCOUNT) { ProfileAccountScreen(onBack = { navCon
                     onBack = { navController.popBackStack() }
                 )
             }
-                }
-                if (!useNavigationRail && showNavigationChrome) {
-                    KaiFloatingBottomBar(
-                        selectedTab = selectedTab,
-                        onTabSelected = ::navigateToTab,
-                        modifier = Modifier.align(Alignment.BottomCenter)
-                    )
                 }
             }
         }
