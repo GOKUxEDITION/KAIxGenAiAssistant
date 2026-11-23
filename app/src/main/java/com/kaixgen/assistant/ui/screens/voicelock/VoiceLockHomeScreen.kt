@@ -69,11 +69,13 @@ import androidx.compose.ui.unit.dp
 import com.kaixgen.assistant.domain.model.SecurityMode
 import com.kaixgen.assistant.ui.components.KaiBrandSignatureBadge
 import com.kaixgen.assistant.ui.components.KaiBrandTopBar
-import com.kaixgen.assistant.ui.theme.KaiBluePrimary
-import com.kaixgen.assistant.ui.theme.KaiDangerRed
-import com.kaixgen.assistant.ui.theme.KaiGreenSuccess
-import com.kaixgen.assistant.ui.theme.KaiWarningAmber
 import com.kaixgen.assistant.ui.viewmodel.VoiceLockUiState
+
+private val IosBlue = Color(0xFF0A84FF)
+private val IosGreen = Color(0xFF30D158)
+private val IosAmber = Color(0xFFFF9F0A)
+private val IosRed = Color(0xFFFF453A)
+private val IosPurple = Color(0xFFBF5AF2)
 
 @Composable
 fun VoiceLockHomeScreen(
@@ -94,7 +96,7 @@ fun VoiceLockHomeScreen(
 ) {
     val config = uiState.config
     val accentColor by animateColorAsState(
-        targetValue = if (config.isVoiceLockEnabled) KaiGreenSuccess else MaterialTheme.colorScheme.onSurfaceVariant,
+        targetValue = if (config.isVoiceLockEnabled) IosGreen else MaterialTheme.colorScheme.onSurfaceVariant,
         animationSpec = tween(300),
         label = "shield_accent"
     )
@@ -132,7 +134,6 @@ fun VoiceLockHomeScreen(
                     .padding(horizontal = 20.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                // Hero Shield Header + Master Switch
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -141,7 +142,7 @@ fun VoiceLockHomeScreen(
                     color = MaterialTheme.colorScheme.surfaceContainerLow,
                     border = BorderStroke(
                         0.5.dp,
-                        if (config.isVoiceLockEnabled) KaiGreenSuccess.copy(alpha = 0.35f)
+                        if (config.isVoiceLockEnabled) IosGreen.copy(alpha = 0.35f)
                         else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                     )
                 ) {
@@ -182,7 +183,7 @@ fun VoiceLockHomeScreen(
                             Text(
                                 text = if (config.isVoiceLockEnabled) "Shield Active • On-device" else "Paused • Tap switch to arm",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = if (config.isVoiceLockEnabled) KaiGreenSuccess else MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = if (config.isVoiceLockEnabled) IosGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -194,19 +195,18 @@ fun VoiceLockHomeScreen(
                             modifier = Modifier.testTag("voice_lock_master_switch"),
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = Color.White,
-                                checkedTrackColor = KaiGreenSuccess
+                                checkedTrackColor = IosGreen
                             )
                         )
                     }
                 }
 
-                // Inline PIN Requirement Banner
                 AnimatedVisibility(visible = uiState.showPinRequiredWarning) {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(18.dp),
-                        color = KaiWarningAmber.copy(alpha = 0.14f),
-                        border = BorderStroke(0.5.dp, KaiWarningAmber.copy(alpha = 0.45f))
+                        color = IosAmber.copy(alpha = 0.14f),
+                        border = BorderStroke(0.5.dp, IosAmber.copy(alpha = 0.45f))
                     ) {
                         Row(
                             modifier = Modifier
@@ -218,7 +218,7 @@ fun VoiceLockHomeScreen(
                             Icon(
                                 imageVector = Icons.Rounded.WarningAmber,
                                 contentDescription = null,
-                                tint = KaiWarningAmber,
+                                tint = IosAmber,
                                 modifier = Modifier.size(22.dp)
                             )
                             Column(modifier = Modifier.weight(1f)) {
@@ -244,7 +244,7 @@ fun VoiceLockHomeScreen(
                             ) {
                                 Text(
                                     text = "Set PIN",
-                                    color = KaiWarningAmber,
+                                    color = IosAmber,
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
@@ -252,7 +252,6 @@ fun VoiceLockHomeScreen(
                     }
                 }
 
-                // Section 1: iOS Grouped Inset Credentials & Vault
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = "CREDENTIALS & VAULT",
@@ -271,7 +270,7 @@ fun VoiceLockHomeScreen(
                         Column(modifier = Modifier.fillMaxWidth()) {
                             VoiceLockInsetRow(
                                 icon = Icons.Rounded.Mic,
-                                iconTint = KaiBluePrimary,
+                                iconTint = IosBlue,
                                 title = "Voice Phrase",
                                 subtitle = "\"${config.voicePhrase}\" • ${config.voicePhraseLanguage.displayName}",
                                 trailingLabel = "Edit",
@@ -288,7 +287,7 @@ fun VoiceLockHomeScreen(
 
                             VoiceLockInsetRow(
                                 icon = Icons.Rounded.Lock,
-                                iconTint = if (config.hasBackupPasscode) KaiGreenSuccess else KaiWarningAmber,
+                                iconTint = if (config.hasBackupPasscode) IosGreen else IosAmber,
                                 title = "Backup Passcode",
                                 subtitle = if (config.hasBackupPasscode) {
                                     "${config.backupPinLength}-digit PIN • ${config.lastPinUpdatedLabel}"
@@ -309,7 +308,7 @@ fun VoiceLockHomeScreen(
 
                             VoiceLockInsetRow(
                                 icon = Icons.Rounded.GridView,
-                                iconTint = Color(0xFFBF5AF2),
+                                iconTint = IosPurple,
                                 title = "App Lock Vault",
                                 subtitle = "${uiState.lockedAppCount} protected • Re-lock ${config.appLockGracePeriod.label}",
                                 trailingLabel = "Manage",
@@ -321,7 +320,6 @@ fun VoiceLockHomeScreen(
                     }
                 }
 
-                // Section 2: Segmented Protection Level & Live Test
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = "PROTECTION LEVEL",
@@ -345,7 +343,6 @@ fun VoiceLockHomeScreen(
                                 .padding(16.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp)
                         ) {
-                            // Sleek iOS Segmented Control
                             Surface(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(14.dp),
@@ -367,7 +364,7 @@ fun VoiceLockHomeScreen(
                                                 .testTag("security_mode_${mode.name.lowercase()}")
                                                 .clickable { onSelectSecurityMode(mode) },
                                             shape = RoundedCornerShape(10.dp),
-                                            color = if (isSelected) KaiBluePrimary else Color.Transparent
+                                            color = if (isSelected) IosBlue else Color.Transparent
                                         ) {
                                             Box(
                                                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp),
@@ -426,7 +423,7 @@ fun VoiceLockHomeScreen(
                                     modifier = Modifier.testTag("test_lock_button"),
                                     shape = RoundedCornerShape(999.dp),
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = KaiBluePrimary,
+                                        containerColor = IosBlue,
                                         contentColor = Color.White
                                     ),
                                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -577,7 +574,7 @@ private fun TestVoiceLockDialog(
                 Icon(
                     imageVector = if (isUnlocked) Icons.Rounded.CheckCircle else Icons.Rounded.Shield,
                     contentDescription = null,
-                    tint = if (isUnlocked) KaiGreenSuccess else KaiBluePrimary
+                    tint = if (isUnlocked) IosGreen else IosBlue
                 )
                 Text(
                     text = if (isUnlocked) "Shield Unlocked" else "Test Voice Lock",
@@ -631,7 +628,7 @@ private fun TestVoiceLockDialog(
                         text = feedbackMessage,
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
-                        color = if (isUnlocked) KaiGreenSuccess else KaiDangerRed
+                        color = if (isUnlocked) IosGreen else IosRed
                     )
                 }
             }
@@ -642,7 +639,7 @@ private fun TestVoiceLockDialog(
                     if (usePinTab) onTestPin(pinInput) else onTestVoice(phraseInput)
                 },
                 shape = RoundedCornerShape(999.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = KaiBluePrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = IosBlue)
             ) {
                 Text(if (usePinTab) "Verify PIN" else "Verify Voice")
             }
