@@ -576,7 +576,19 @@ composable(KaiRoutesV2.PROFILE_ACCOUNT) { ProfileAccountScreen(onBack = { navCon
                                onBack = { navController.popBackStack() }
                            )
                     }
-            composable(KaiRoutesV2.STUDENT_MODE) { StudentModeScreen(onOpenAiTutorChat = { navController.navigate(KaiRoutesV2.AI_C; composable(KaiRoutesV2.SENIOR_MODE) { SeniorModeScreen(onOpenVoiceBuddy = { navigateToTab(KaiBottomTab.KAI_BUDDY) }, onBack = { navController.popBackStack() }) }HAT) }, onBack = { navController.popBackStack() }) }
+            composable(KaiRoutesV2.STUDENT_MODE) {
+                StudentModeScreen(
+                    onOpenAiTutorChat = { navController.navigate(KaiRoutesV2.AI_CHAT) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            
+            composable(KaiRoutesV2.SENIOR_MODE) {
+                SeniorModeScreen(
+                    onOpenVoiceBuddy = { navigateToTab(KaiBottomTab.KAI_BUDDY) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
                 }
                 if (!useNavigationRail && showNavigationChrome) {
                     KaiFloatingBottomBar(
