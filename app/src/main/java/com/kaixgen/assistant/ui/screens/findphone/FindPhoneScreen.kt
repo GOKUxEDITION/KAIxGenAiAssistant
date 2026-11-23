@@ -17,6 +17,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,6 +46,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -72,31 +74,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.kaixgen.assistant.R
 import com.kaixgen.assistant.domain.model.FindPhoneConfig
 import com.kaixgen.assistant.ui.components.KaiBrandSignatureBadge
 import com.kaixgen.assistant.ui.components.KaiBrandTopBar
-import com.kaixgen.assistant.ui.components.KaiCircularIconBadge
-import com.kaixgen.assistant.ui.components.KaiElevatedCard
-import com.kaixgen.assistant.ui.components.KaiTwoToneHeadline
-import com.kaixgen.assistant.ui.theme.KaiBlueDeep
-import com.kaixgen.assistant.ui.theme.KaiCyanAccent
-import com.kaixgen.assistant.ui.theme.KaiDangerRed
-import com.kaixgen.assistant.ui.theme.KaiGreenSuccess
-import com.kaixgen.assistant.ui.theme.KaiTheme
 import kotlinx.coroutines.delay
 
-/**
- * Full Safety & Find Phone Section (PRD S4-01 / S4-02 / S4-03 / S4-07 / S4-08 / S4-09):
- * - Find Phone Ring Hero + Voice / Clap / Flashlight / Vibrate toggles
- * - Safe-Walk Check-In Countdown Timer (triggers Find Phone alarm if timer hits zero)
- * - Quick Fake Call Simulator UI (for personal safety exit situations)
- * - On-device Emergency ICE Card
- */
+private val SafetyBlue = Color(0xFF0A84FF)
+private val SafetyCyan = Color(0xFF64D2FF)
+private val SafetyGreen = Color(0xFF30D158)
+private val SafetyAmber = Color(0xFFFF9F0A)
+private val SafetyRed = Color(0xFFFF453A)
+private val SafetyPurple = Color(0xFFBF5AF2)
+
 @Composable
 fun FindPhoneScreen(
     uiState: FindPhoneConfig,
@@ -111,7 +104,6 @@ fun FindPhoneScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val extendedColors = KaiTheme.extendedColors
     var activeRingtone by remember { mutableStateOf<Ringtone?>(null) }
 
     // Safe-Walk Countdown State
@@ -128,70 +120,52 @@ fun FindPhoneScreen(
     var iceBloodGroup by remember { mutableStateOf("O+") }
     var isEditingIce by remember { mutableStateOf(false) }
 
-    LaunchedEffect(uiState.isRinging || (showFakeCallDialog && !fakeCallAnswered)) {
-        val shouldPlaySound = uiState.isRinging || (showFakeCallDialog && !fakeCallAnswered)
-        if (shouldPlaySound) {
-            try {
-                val uri = if (showFakeCallDialog && !fakeCallAnswered) {
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-                } else {
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-                        ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-                }
+    LaunchedEffect(uiState.isRinging) {
+        if (uiState.isRinging) {
+            runCatching {
+                val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                    ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
                 val ringtone = RingtoneManager.getRingtone(context, uri)
                 activeRingtone = ringtone
                 ringtone?.play()
-            } catch (_: Exception) {
-                // Gracefully degrade on devices/emulators without alarm stream audio
             }
         } else {
-            try {
-                activeRingtone?.stop()
-                activeRingtone = null
-            } catch (_: Exception) {
-                activeRingtone = null
-            }
-        }
-    }
-
-    LaunchedEffect(isSafeWalkActive, safeWalkRemainingSec) {
-        if (isSafeWalkActive && safeWalkRemainingSec > 0) {
-            delay(1_000)
-            safeWalkRemainingSec -= 1
-            if (safeWalkRemainingSec == 0) {
-                isSafeWalkActive = false
-                if (!uiState.isRinging) {
-                    onToggleRing()
-                }
-            }
+            runCatching { activeRingtone?.stop() }
+            activeRingtone = null
         }
     }
 
     DisposableEffect(Unit) {
         onDispose {
-            try {
-                activeRingtone?.stop()
-            } catch (_: Exception) {
-                // Ignore cleanup failure
-            }
-            onStopRinging()
+            runCatching { activeRingtone?.stop() }
+            if (uiState.isRinging) onStopRinging()
         }
     }
 
-    val pulseTransition = rememberInfiniteTransition(label = "ring_pulse")
+    LaunchedEffect(isSafeWalkActive, safeWalkRemainingSec) {
+        if (isSafeWalkActive && safeWalkRemainingSec > 0) {
+            delay(1000L)
+            safeWalkRemainingSec -= 1
+        } else if (isSafeWalkActive && safeWalkRemainingSec == 0) {
+            isSafeWalkActive = false
+            if (!uiState.isRinging) onToggleRing()
+        }
+    }
+
+    val pulseTransition = rememberInfiniteTransition(label = "radar_pulse")
     val pulseScale by pulseTransition.animateFloat(
-        initialValue = 1.0f,
-        targetValue = if (uiState.isRinging) 1.24f else 1.08f,
+        initialValue = 1f,
+        targetValue = if (uiState.isRinging) 1.18f else 1.06f,
         animationSpec = infiniteRepeatable(
-            animation = tween(if (uiState.isRinging) 650 else 1_800, easing = FastOutSlowInEasing),
+            animation = tween(if (uiState.isRinging) 650 else 2200, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
-        label = "pulse_scale"
+        label = "radar_scale"
     )
-
-    val buttonColor by animateColorAsState(
-        targetValue = if (uiState.isRinging) KaiDangerRed else MaterialTheme.colorScheme.primary,
-        label = "ring_button_color"
+    val ringAccent by animateColorAsState(
+        targetValue = if (uiState.isRinging) SafetyRed else SafetyBlue,
+        animationSpec = tween(250),
+        label = "ring_accent"
     )
 
     Column(
@@ -204,337 +178,472 @@ fun FindPhoneScreen(
             onSettingsClick = onNavigateToSettings
         )
 
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .widthIn(max = 600.dp)
-                .align(Alignment.CenterHorizontally),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+                .verticalScroll(rememberScrollState()),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Spacer(modifier = Modifier.height(6.dp))
-
-            KaiTwoToneHeadline(
-                prefix = stringResource(R.string.find_phone_heading_prefix),
-                highlighted = stringResource(R.string.find_phone_heading_highlight)
-            )
-
-            Text(
-                text = stringResource(R.string.find_phone_subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Animated Ring / Stop Hero Button
-            Box(
-                modifier = Modifier.size(196.dp),
-                contentAlignment = Alignment.Center
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 760.dp)
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(22.dp)
             ) {
-                Box(
+                // Hero Acoustic Radar Ring
+                Column(
                     modifier = Modifier
-                        .size(164.dp)
-                        .scale(pulseScale)
-                        .clip(CircleShape)
-                        .background(buttonColor.copy(alpha = if (uiState.isRinging) 0.22f else 0.14f))
-                )
-                Box(
-                    modifier = Modifier
-                        .size(144.dp)
-                        .clip(CircleShape)
-                        .background(
-                            brush = Brush.linearGradient(
-                                colors = if (uiState.isRinging) {
-                                    listOf(KaiDangerRed, Color(0xFFFF6B5B))
-                                } else {
-                                    listOf(MaterialTheme.colorScheme.primary, KaiCyanAccent)
-                                }
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "Safety & Find Phone",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Box(
+                        modifier = Modifier.size(164.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(152.dp)
+                                .scale(pulseScale)
+                                .clip(CircleShape)
+                                .background(ringAccent.copy(alpha = if (uiState.isRinging) 0.22f else 0.12f))
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(CircleShape)
+                                .background(
+                                    Brush.radialGradient(
+                                        colors = if (uiState.isRinging) {
+                                            listOf(SafetyRed, Color(0xFFB71C1C))
+                                        } else {
+                                            listOf(SafetyBlue, Color(0xFF0051B5))
+                                        }
+                                    )
+                                )
+                                .testTag("find_phone_ring_button")
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = ripple(bounded = true, color = Color.White),
+                                    onClick = onToggleRing
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(
+                                    imageVector = if (uiState.isRinging) Icons.Rounded.Stop else Icons.Rounded.NotificationsActive,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(34.dp)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = if (uiState.isRinging) "Stop Ring" else "Ring Now",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
+
+                    Text(
+                        text = if (uiState.isRinging) {
+                            "Alarm ringing at max volume • Tap to silence"
+                        } else {
+                            "Say \"${uiState.voiceTriggerPhrase}\" or double-clap to locate"
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (uiState.isRinging) SafetyRed else MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                // Section 1: iOS Grouped Inset Acoustic Triggers
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "LOCATOR TRIGGERS",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
+                        border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f))
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            FindPhoneInsetToggleRow(
+                                icon = Icons.Rounded.RecordVoiceOver,
+                                iconTint = SafetyBlue,
+                                title = "Voice Trigger",
+                                subtitle = "\"${uiState.voiceTriggerPhrase}\"",
+                                checked = uiState.isVoiceTriggerEnabled,
+                                onCheckedChange = onToggleVoiceTrigger,
+                                testTag = "find_phone_voice_trigger_switch"
                             )
-                        )
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = ripple(bounded = true, color = Color.White),
-                            onClick = onToggleRing
-                        )
-                        .testTag("find_phone_ring_button"),
+                            HorizontalDivider(
+                                modifier = Modifier.padding(start = 60.dp),
+                                thickness = 0.5.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
+                            )
+                            FindPhoneInsetToggleRow(
+                                icon = Icons.Rounded.GraphicEq,
+                                iconTint = SafetyCyan,
+                                title = "Double-Clap Radar",
+                                subtitle = "On-device clap detection when idle",
+                                checked = uiState.isDoubleClapEnabled,
+                                onCheckedChange = onToggleDoubleClap,
+                                testTag = "find_phone_clap_switch"
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.padding(start = 60.dp),
+                                thickness = 0.5.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
+                            )
+                            FindPhoneInsetToggleRow(
+                                icon = Icons.Rounded.FlashlightOn,
+                                iconTint = SafetyAmber,
+                                title = "Flashlight Strobe",
+                                subtitle = "Blink camera LED in dark rooms",
+                                checked = uiState.isFlashlightStrobeEnabled,
+                                onCheckedChange = onToggleFlashlight,
+                                testTag = "find_phone_flash_switch"
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.padding(start = 60.dp),
+                                thickness = 0.5.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
+                            )
+                            FindPhoneInsetToggleRow(
+                                icon = Icons.Rounded.Vibration,
+                                iconTint = SafetyPurple,
+                                title = "High-Pulse Vibrate",
+                                subtitle = "Strong tactile pattern while ringing",
+                                checked = uiState.isVibrateEnabled,
+                                onCheckedChange = onToggleVibrate,
+                                testTag = "find_phone_vibrate_switch"
+                            )
+                        }
+                    }
+                }
+
+                // Section 2: Personal Safety Suite
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "PERSONAL SAFETY",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
+                        border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f))
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            // Safe-Walk Check-In
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("safety_safe_walk_card")
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .background(SafetyGreen.copy(alpha = 0.16f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.DirectionsWalk,
+                                            contentDescription = null,
+                                            tint = SafetyGreen,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    }
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            text = "Safe-Walk Check-In",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            fontWeight = FontWeight.Medium,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                        Text(
+                                            text = if (isSafeWalkActive) {
+                                                val mins = safeWalkRemainingSec / 60
+                                                val secs = safeWalkRemainingSec % 60
+                                                "Active • %02d:%02d remaining".format(mins, secs)
+                                            } else {
+                                                "Auto-alarm if you don't check in"
+                                            },
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = if (isSafeWalkActive) SafetyGreen else MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (!isSafeWalkActive) {
+                                        listOf(5, 10, 15).forEach { mins ->
+                                            FilterChip(
+                                                selected = false,
+                                                onClick = {
+                                                    safeWalkRemainingSec = mins * 60
+                                                    isSafeWalkActive = true
+                                                },
+                                                label = { Text("${mins}m") }
+                                            )
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Button(
+                                        onClick = {
+                                            isSafeWalkActive = false
+                                            safeWalkRemainingSec = 0
+                                            if (uiState.isRinging) onStopRinging()
+                                        },
+                                        modifier = Modifier.testTag("safe_walk_im_safe_button"),
+                                        shape = RoundedCornerShape(999.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = if (isSafeWalkActive) SafetyGreen else MaterialTheme.colorScheme.surfaceContainerHigh,
+                                            contentColor = if (isSafeWalkActive) Color.White else MaterialTheme.colorScheme.onSurface
+                                        ),
+                                        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
+                                    ) {
+                                        Text(
+                                            text = "I'm Safe",
+                                            style = MaterialTheme.typography.labelMedium,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                }
+                            }
+
+                            HorizontalDivider(
+                                modifier = Modifier.padding(start = 60.dp),
+                                thickness = 0.5.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
+                            )
+
+                            // Fake Call Shield
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("safety_fake_call_card")
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(SafetyBlue.copy(alpha = 0.16f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Call,
+                                        contentDescription = null,
+                                        tint = SafetyBlue,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = "Fake Call Shield",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = "Caller: $fakeCallerName • Instant exit",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                                Button(
+                                    onClick = {
+                                        fakeCallAnswered = false
+                                        showFakeCallDialog = true
+                                    },
+                                    modifier = Modifier.testTag("trigger_fake_call_button"),
+                                    shape = RoundedCornerShape(999.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = SafetyBlue,
+                                        contentColor = Color.White
+                                    ),
+                                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
+                                ) {
+                                    Text(
+                                        text = "Trigger",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+
+                            HorizontalDivider(
+                                modifier = Modifier.padding(start = 60.dp),
+                                thickness = 0.5.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f)
+                            )
+
+                            // Emergency ICE Medical Card
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("safety_ice_card")
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .background(SafetyRed.copy(alpha = 0.16f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.MedicalServices,
+                                            contentDescription = null,
+                                            tint = SafetyRed,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    }
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            text = "Emergency ICE Card",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            fontWeight = FontWeight.Medium,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                        Text(
+                                            text = "$iceContactName • Blood: $iceBloodGroup",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                    TextButton(
+                                        onClick = { isEditingIce = !isEditingIce },
+                                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                                    ) {
+                                        Text(
+                                            text = if (isEditingIce) "Done" else "Edit",
+                                            color = SafetyBlue,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                }
+
+                                AnimatedVisibility(visible = isEditingIce) {
+                                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        OutlinedTextField(
+                                            value = iceContactName,
+                                            onValueChange = { iceContactName = it },
+                                            label = { Text("Emergency Contact") },
+                                            singleLine = true,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                        OutlinedTextField(
+                                            value = iceBloodGroup,
+                                            onValueChange = { iceBloodGroup = it },
+                                            label = { Text("Blood Group") },
+                                            singleLine = true,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = if (uiState.isRinging) Icons.Rounded.Stop else Icons.Rounded.NotificationsActive,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(40.dp)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = if (uiState.isRinging) {
-                                stringResource(R.string.find_phone_stop_button)
-                            } else {
-                                stringResource(R.string.find_phone_ring_button)
-                            },
-                            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
-                            color = Color.White
-                        )
-                    }
+                    KaiBrandSignatureBadge()
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
-
-            // Trigger & Alert Toggle Cards
-            FindPhoneOptionCard(
-                icon = Icons.Rounded.RecordVoiceOver,
-                iconContainer = extendedColors.micContainer,
-                iconTint = MaterialTheme.colorScheme.primary,
-                title = "Voice Trigger Phrase",
-                subtitle = "\u201C${uiState.voiceTriggerPhrase}\u201D",
-                checked = uiState.isVoiceTriggerEnabled,
-                onCheckedChange = onToggleVoiceTrigger,
-                testTag = "find_phone_voice_trigger_switch"
-            )
-
-            FindPhoneOptionCard(
-                icon = Icons.Rounded.GraphicEq,
-                iconContainer = extendedColors.lockContainer,
-                iconTint = extendedColors.success,
-                title = "Double-Clap Detection",
-                subtitle = "Clap twice within 1 second to ring phone",
-                checked = uiState.isDoubleClapEnabled,
-                onCheckedChange = onToggleDoubleClap,
-                testTag = "find_phone_clap_switch"
-            )
-
-            FindPhoneOptionCard(
-                icon = Icons.Rounded.FlashlightOn,
-                iconContainer = extendedColors.warningContainer,
-                iconTint = extendedColors.warning,
-                title = "Flashlight Strobe",
-                subtitle = "Blink rear LED while ringing in dark rooms",
-                checked = uiState.isFlashlightStrobeEnabled,
-                onCheckedChange = onToggleFlashlight,
-                testTag = "find_phone_flash_switch"
-            )
-
-            FindPhoneOptionCard(
-                icon = Icons.Rounded.Vibration,
-                iconContainer = MaterialTheme.colorScheme.surfaceVariant,
-                iconTint = MaterialTheme.colorScheme.onSurfaceVariant,
-                title = "Max Vibration Pattern",
-                subtitle = "Strong pulse even when device is on Silent",
-                checked = uiState.isVibrateEnabled,
-                onCheckedChange = onToggleVibrate,
-                testTag = "find_phone_vibrate_switch"
-            )
-
-            // Safe-Walk Check-In Timer Card (PRD S4-08)
-            KaiElevatedCard(modifier = Modifier.testTag("safety_safe_walk_card")) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        KaiCircularIconBadge(
-                            icon = Icons.Rounded.DirectionsWalk,
-                            containerColor = extendedColors.micContainer,
-                            iconTint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = "Safe-Walk Check-In Timer",
-                                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
-                            )
-                            Text(
-                                text = if (isSafeWalkActive) {
-                                    val mins = safeWalkRemainingSec / 60
-                                    val secs = safeWalkRemainingSec % 60
-                                    "Check-in due in %02d:%02d — alarm rings if missed".format(mins, secs)
-                                } else {
-                                    "Auto-rings siren alert if you don\u2019t check in on time"
-                                },
-                                style = MaterialTheme.typography.bodySmall,
-                                color = if (isSafeWalkActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-
-                    if (isSafeWalkActive) {
-                        Button(
-                            onClick = {
-                                isSafeWalkActive = false
-                                safeWalkRemainingSec = 0
-                            },
-                            shape = RoundedCornerShape(50),
-                            colors = ButtonDefaults.buttonColors(containerColor = KaiGreenSuccess),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .testTag("safe_walk_im_safe_button")
-                        ) {
-                            Text("I\u2019m Safe — Cancel Timer", fontWeight = FontWeight.Bold)
-                        }
-                    } else {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            listOf(5 to "5 min", 10 to "10 min", 15 to "15 min").forEach { (mins, label) ->
-                                FilterChip(
-                                    selected = false,
-                                    onClick = {
-                                        safeWalkRemainingSec = mins * 60
-                                        isSafeWalkActive = true
-                                    },
-                                    label = { Text(label) },
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Fake Call Quick Exit Card (PRD S4-07)
-            KaiElevatedCard(modifier = Modifier.testTag("safety_fake_call_card")) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    KaiCircularIconBadge(
-                        icon = Icons.Rounded.Call,
-                        containerColor = extendedColors.lockContainer,
-                        iconTint = extendedColors.success
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Fake Call Helper",
-                            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
-                        )
-                        Text(
-                            text = "Simulate an incoming call from \u201C$fakeCallerName\u201D anytime",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    OutlinedButton(
-                        onClick = {
-                            fakeCallAnswered = false
-                            showFakeCallDialog = true
-                        },
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier.testTag("trigger_fake_call_button")
-                    ) {
-                        Text("Trigger")
-                    }
-                }
-            }
-
-            // Emergency ICE Info Card (PRD S4-09)
-            KaiElevatedCard(modifier = Modifier.testTag("safety_ice_card")) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            KaiCircularIconBadge(
-                                icon = Icons.Rounded.MedicalServices,
-                                containerColor = extendedColors.warningContainer,
-                                iconTint = extendedColors.warning
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Column {
-                                Text(
-                                    text = "Emergency ICE Card",
-                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
-                                )
-                                Text(
-                                    text = "Contact: $iceContactName \u2022 Blood Group: $iceBloodGroup",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-                        TextButton(onClick = { isEditingIce = !isEditingIce }) {
-                            Text(if (isEditingIce) "Done" else "Edit")
-                        }
-                    }
-
-                    AnimatedVisibility(visible = isEditingIce) {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            OutlinedTextField(
-                                value = iceContactName,
-                                onValueChange = { iceContactName = it },
-                                label = { Text("Emergency Contact Name") },
-                                singleLine = true,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                            OutlinedTextField(
-                                value = iceBloodGroup,
-                                onValueChange = { iceBloodGroup = it },
-                                label = { Text("Blood Group & Notes") },
-                                singleLine = true,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                    }
-                }
-            }
-
-            KaiBrandSignatureBadge()
-
-            Spacer(modifier = Modifier.height(104.dp))
         }
     }
 
     if (showFakeCallDialog) {
         AlertDialog(
             onDismissRequest = { showFakeCallDialog = false },
-            containerColor = KaiBlueDeep,
-            titleContentColor = Color.White,
-            textContentColor = Color.White,
-            icon = {
-                Icon(
-                    imageVector = Icons.Rounded.Call,
-                    contentDescription = null,
-                    tint = KaiGreenSuccess,
-                    modifier = Modifier.size(36.dp)
-                )
-            },
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            shape = RoundedCornerShape(24.dp),
             title = {
                 Text(
-                    text = fakeCallerName,
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                    text = if (fakeCallAnswered) "$fakeCallerName • Connected" else "Incoming Call",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
                 )
             },
             text = {
-                Text(
-                    text = if (fakeCallAnswered) "Call connected • 00:04" else "Incoming mobile call...",
-                    color = Color.White.copy(alpha = 0.85f),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = if (fakeCallAnswered) {
+                            "00:08 • Speaker active (simulated call)"
+                        } else {
+                            "$fakeCallerName is calling your phone..."
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    if (!fakeCallAnswered) {
+                        OutlinedTextField(
+                            value = fakeCallerName,
+                            onValueChange = { fakeCallerName = it },
+                            label = { Text("Caller Label") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             },
             confirmButton = {
                 if (!fakeCallAnswered) {
                     Button(
                         onClick = { fakeCallAnswered = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = KaiGreenSuccess)
+                        shape = RoundedCornerShape(999.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = SafetyGreen)
                     ) {
                         Icon(Icons.Rounded.Call, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(6.dp))
@@ -543,13 +652,16 @@ fun FindPhoneScreen(
                 }
             },
             dismissButton = {
-                Button(
-                    onClick = { showFakeCallDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = KaiDangerRed)
+                OutlinedButton(
+                    onClick = {
+                        fakeCallAnswered = false
+                        showFakeCallDialog = false
+                    },
+                    shape = RoundedCornerShape(999.dp)
                 ) {
-                    Icon(Icons.Rounded.CallEnd, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Rounded.CallEnd, contentDescription = null, tint = SafetyRed, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("End")
+                    Text(if (fakeCallAnswered) "End Call" else "Decline", color = SafetyRed)
                 }
             }
         )
@@ -557,9 +669,8 @@ fun FindPhoneScreen(
 }
 
 @Composable
-private fun FindPhoneOptionCard(
+private fun FindPhoneInsetToggleRow(
     icon: ImageVector,
-    iconContainer: Color,
     iconTint: Color,
     title: String,
     subtitle: String,
@@ -567,42 +678,52 @@ private fun FindPhoneOptionCard(
     onCheckedChange: (Boolean) -> Unit,
     testTag: String
 ) {
-    KaiElevatedCard {
-        Row(
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .size(34.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(iconTint.copy(alpha = 0.16f)),
+            contentAlignment = Alignment.Center
         ) {
-            KaiCircularIconBadge(
-                icon = icon,
-                containerColor = iconContainer,
-                iconTint = iconTint
-            )
-            Spacer(modifier = Modifier.width(14.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Switch(
-                checked = checked,
-                onCheckedChange = onCheckedChange,
-                modifier = Modifier.testTag(testTag),
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    checkedTrackColor = MaterialTheme.colorScheme.primary
-                )
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = Modifier.size(18.dp)
             )
         }
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.testTag(testTag),
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = SafetyGreen
+            )
+        )
     }
 }
